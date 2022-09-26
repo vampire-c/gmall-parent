@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>gmall-parent</artifactId>
+        <groupId>com.atguigu.gmall</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>model</artifactId>
+    <description>模型层</description>
+    <!--
+    pojo: POJO（Plain Ordinary Java Object）简单的Java对象;
+    模型划分; 领域划分。  DDD：领域驱动设计(DDD)
+    dao: database access object：数据库访问对象；访问数据库用的这个对象。
+         xxxDao，xxxMapper  t_user(id,name,age,email) === User('zs',18,'xxx')
+    do/entity: data object：数据对象；                封装数据库查来的数据；
+    dto: data transport object：用来传输数据的对象；    封装用来数据传输的；
+    ======= OrderService、OrderController、UserDTO、UserDao、UserVo、UserEntity =====
+    为每个类加一个领域后缀标识，标志出这个类对象将来是用来干嘛的。维护起来方便
+    vo: Value/View Object： 视图对象； 凡是给页面、前端返回的所有数据。
+    to: transport object： UserTO（层内参数、层层之间远程传递）、UserDTO（给数据库传数据用的对象）
+    bo: business object：业务对象
+    t_user(id,name,age,email,password)  ==== User(1,'zs',18,'xx','123456')
+      - 1、脱敏处理：  User(1,'zs',18,'xx',null)
+      - 2、准备VO： User(1,'zs',18,'xx','123456')  == UserVo(1,'zs',18,'xx')
+    -->
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!--mybatis-plus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--swagger-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

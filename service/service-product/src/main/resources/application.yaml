@@ -1,0 +1,17 @@
+server:
+  port: 8000
+
+  # 配置数据源
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.179.180:3306/gmall_product?useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  zipkin:
+    base-url: http://192.168.179.180:9411
+    sender:
+      type: web
+#mybatis-plus:
+#  mapper-locations: classpath*:/mapper/**/*.xml
