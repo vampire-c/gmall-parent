@@ -13,5 +13,16 @@ spring:
     base-url: http://192.168.179.180:9411
     sender:
       type: web
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 #mybatis-plus:
 #  mapper-locations: classpath*:/mapper/**/*.xml
+
+app:
+  minio:
+    endpoint: http://192.168.179.180:9000
+    access-key: admin
+    secret-key: admin123456
+    bucket-name: mall
