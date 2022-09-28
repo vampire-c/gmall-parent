@@ -9,5 +9,4 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-09-26 19:16:22
 */
 public interface BaseTrademarkService extends IService<BaseTrademark> {
-
 }
