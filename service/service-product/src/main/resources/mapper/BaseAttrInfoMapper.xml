@@ -5,14 +5,47 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.BaseAttrInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.product.entity.BaseAttrInfo">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
-            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
-            <result property="categoryLevel" column="category_level" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+        <result property="categoryLevel" column="category_level" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,attr_name,category_id,
         category_level
     </sql>
+
+    <resultMap id="getAttrInfoListRM"
+               type="com.atguigu.gmall.product.entity.BaseAttrInfo"
+               autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="attrValueList"
+                    ofType="com.atguigu.gmall.product.entity.BaseAttrValue"
+                    autoMapping="true">
+            <id property="id" column="vid"></id>
+        </collection>
+    </resultMap>
+
+    <select id="getAttrInfoList"
+            resultMap="getAttrInfoListRM">
+        select bai.*,
+        bav.id vid,
+        bav.value_name,
+        bav.attr_id
+        from gmall_product.base_attr_info bai
+        left join gmall_product.base_attr_value bav on bai.id = bav.attr_id
+        <where>
+            <if test="c1id !=0">
+                (bai.category_id = #{c1id} and bai.category_level = 1)
+            </if>
+            <if test="c2id!=0">
+                or (bai.category_id = #{c2id} and bai.category_level = 2)
+            </if>
+            <if test="c3id!=0">
+                or (bai.category_id = #{c3id} and bai.category_level = 3)
+            </if>
+        </where>
+
+    </select>
 </mapper>

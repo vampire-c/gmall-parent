@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 属性表
+ *
  * @TableName base_attr_info
  */
-@TableName(value ="base_attr_info")
+@TableName(value = "base_attr_info")
 @Data
 public class BaseAttrInfo implements Serializable {
     /**
@@ -38,4 +40,10 @@ public class BaseAttrInfo implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 属性值表集合
+     */
+    @TableField(exist = false)
+    private List<BaseAttrValue> attrValueList;
 }
