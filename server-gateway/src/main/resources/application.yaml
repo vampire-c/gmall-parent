@@ -8,6 +8,9 @@ spring:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
+            # 简单跨域
+
+            # 复杂跨域
             allowedHeaders: "*"
             allowCredentials: true
 
