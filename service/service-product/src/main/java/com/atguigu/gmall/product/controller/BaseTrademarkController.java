@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Api(tags = "品牌列表接口")
 @RequestMapping("/admin/product")
 @RestController
@@ -91,5 +93,17 @@ public class BaseTrademarkController {
     public Result getBaseTrademark(@PathVariable Long id) {
         BaseTrademark baseTrademark = this.baseTrademarkService.getById(id);
         return Result.ok(baseTrademark);
+    }
+
+    /**
+     * 获取品牌列表
+     *
+     * @return
+     */
+    @ApiOperation("获取品牌列表")
+    @GetMapping("/baseTrademark/getTrademarkList")
+    public Result getTrademarkList() {
+        List<BaseTrademark> baseTrademarkList = baseTrademarkService.list();
+        return Result.ok(baseTrademarkList);
     }
 }
