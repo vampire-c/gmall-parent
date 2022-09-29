@@ -35,7 +35,7 @@ public class TrademarkController {
     @ApiOperation("查询品牌分页列表")
     @GetMapping("/baseTrademark/{pageNum}/{limitNum}")
     public Result baseTrademark(@PathVariable Long pageNum, @PathVariable Long limitNum) {
-        Page<BaseTrademark> page = new Page<>();
+        Page<BaseTrademark> page = new Page<>(pageNum, limitNum);
         Page<BaseTrademark> result = this.baseTrademarkService.page(page);
         return Result.ok(result);
     }
