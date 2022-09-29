@@ -20,7 +20,7 @@ import java.util.List;
 @Api(tags = "平台属性列表接口")
 @RequestMapping("/admin/product")
 @RestController
-public class CategoryController {
+public class BaseCategoryController {
 
     @Autowired
     private BaseCategory1Service baseCategory1Service;

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "品牌列表接口")
 @RequestMapping("/admin/product")
 @RestController
-public class TrademarkController {
+public class BaseTrademarkController {
 
     @Autowired
     private BaseTrademarkService baseTrademarkService;
