@@ -1,0 +1,94 @@
+{
+  "id": null,
+  "spuName": "华为Mate Xs 2",
+  "description": "品牌： 华为（HUAWEI）\n商品名称：华为Mate Xs 2商品编号：100022115283商品毛重：0.96kg商品产地：中国大陆CPU型号：骁龙888运行内存：8GB机身颜色：黑色三防标准：不支持防水屏幕分辨率：FHD+充电功率：50-79W风格：科技，时尚，商务屏幕材质：OLED折叠屏后摄主像素：5000万像素机身内存：256GB",
+  "category3Id": 61,
+  "tmId": 2,
+  //保存到 spu_info
+
+
+
+  "spuImageList": [
+    //每一条记录都保存到 spu_image
+    {
+      "imgName": "2.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/e3ac1293a0e449d8ba4a724baf893158_2.png"
+    },
+    {
+      "imgName": "5.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/657465f00aea46169d9663339344e658_5.png"
+    },
+    {
+      "imgName": "1.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/73da3fcd7e0f436890f4a434974133d6_1.png"
+    },
+    {
+      "imgName": "4.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/d925070098c8452ab639734ff9a06963_4.png"
+    },
+    {
+      "imgName": "3.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/c25f9f55837f41308e4a1daa453e9061_3.png"
+    },
+    {
+      "imgName": "2.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/d36678a7f44245aeb1f4cb0a4ab587d4_2.png"
+    },
+    {
+      "imgName": "1.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/edaeb4ec82814214af06357db6a6a423_1.png"
+    },
+    {
+      "imgName": "3.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/a99801e3f2344517aaf0e3beec49230a_3.png"
+    },
+    {
+      "imgName": "4.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/d885d872bc304381b2567f958d057c98_4.png"
+    },
+    {
+      "imgName": "5.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/5fa49b6f0c7345f099c94433f242ff2f_5.png"
+    }
+  ],
+  "spuSaleAttrList": [
+    {
+      "baseSaleAttrId": "1",
+      "saleAttrName": "选择颜色",
+      //存在 spu_sale_attr 表中
+      "spuSaleAttrValueList": [
+        //每个都存在 spu_sale_attr_value 表中
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "雅黑"
+        },
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "净白"
+        },
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrValueName": "霜紫"
+        }
+      ]
+    },
+    {
+      "baseSaleAttrId": "2",
+      "saleAttrName": "选择版本",
+      "spuSaleAttrValueList": [
+        {
+          "baseSaleAttrId": "2",
+          "saleAttrValueName": "8+256"
+        },
+        {
+          "baseSaleAttrId": "2",
+          "saleAttrValueName": "8+512"
+        },
+        {
+          "baseSaleAttrId": "2",
+          "saleAttrValueName": "12+512"
+        }
+      ]
+    }
+  ]
+}

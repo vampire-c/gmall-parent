@@ -1,0 +1,83 @@
+{
+  "id": null,
+  "spuId": 29,
+  "price": "2499.00 ",
+  "skuName": "OPPO Reno8 8GB+128GB 鸢尾紫 新配色上市 80W超级闪充 5000万水光人像三摄 3200万前置索尼镜头 5G手机",
+  "weight": "0.49",
+  "skuDesc": "大健康粒度设计奥拉夫看到撒附近的萨拉",
+  "category3Id": 61,
+  "skuDefaultImg": "http://192.168.200.100:9000/mall/c2c8a5af587d422cb02ffef3c63d1e63_1.png",
+  "tmId": 5,
+  "skuAttrValueList": [
+    {
+      "attrId": "1",
+      "valueId": "4"
+    },
+    {
+      "attrId": "2",
+      "valueId": "8"
+    },
+    {
+      "attrId": "3",
+      "valueId": "19"
+    },
+    {
+      "attrId": "4",
+      "valueId": "27"
+    },
+    {
+      "attrId": "5",
+      "valueId": "34"
+    },
+    {
+      "attrId": "6",
+      "valueId": "47"
+    }
+  ],
+  "skuSaleAttrValueList": [
+    {
+      "saleAttrValueId": "127",
+      "saleAttrValueName": "鸢尾紫",
+      "baseSaleAttrId": "1",
+      "saleAttrName": "选择颜色"
+    },
+    {
+      "saleAttrValueId": "128",
+      "saleAttrValueName": "8+128",
+      "baseSaleAttrId": "2",
+      "saleAttrName": "选择版本"
+    }
+  ],
+  "skuImageList": [
+    {
+      "spuImgId": 294,
+      "imgName": "3.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/9dff8dabca4149c498ffb3a6ad0ea253_3.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 295,
+      "imgName": "5.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/4aa3979519d34486a0757fba456342fe_5.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 296,
+      "imgName": "2.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/c15f7fbac96e45e7b713291b030899d0_2.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 297,
+      "imgName": "1.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/c2c8a5af587d422cb02ffef3c63d1e63_1.png",
+      "isDefault": 1
+    },
+    {
+      "spuImgId": 298,
+      "imgName": "4.png",
+      "imgUrl": "http://192.168.200.100:9000/mall/05c24ccddb5346e9a5e547c7ac8faea3_4.png",
+      "isDefault": 0
+    }
+  ]
+}
