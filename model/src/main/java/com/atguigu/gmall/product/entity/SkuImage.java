@@ -44,7 +44,7 @@ public class SkuImage implements Serializable {
     /**
      * 是否默认
      */
-    private String isDefault;
+    private Integer isDefault;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
