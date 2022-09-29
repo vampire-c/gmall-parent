@@ -5,14 +5,38 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.SpuSaleAttrMapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.product.entity.SpuSaleAttr">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="spuId" column="spu_id" jdbcType="BIGINT"/>
-            <result property="baseSaleAttrId" column="base_sale_attr_id" jdbcType="BIGINT"/>
-            <result property="saleAttrName" column="sale_attr_name" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="spuId" column="spu_id" jdbcType="BIGINT"/>
+        <result property="baseSaleAttrId" column="base_sale_attr_id" jdbcType="BIGINT"/>
+        <result property="saleAttrName" column="sale_attr_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,spu_id,base_sale_attr_id,
         sale_attr_name
     </sql>
+
+    <resultMap id="getSpuSaleAttrListMP"
+               type="com.atguigu.gmall.product.entity.SpuSaleAttr"
+               autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="spuSaleAttrValueList"
+                    ofType="com.atguigu.gmall.product.entity.SpuSaleAttrValue"
+                    autoMapping="true">
+            <id property="id" column="vid"></id>
+        </collection>
+
+    </resultMap>
+
+    <select id="getSpuSaleAttrList"
+            resultMap="getSpuSaleAttrListMP">
+        select ssa.*,
+               ssav.id vid,
+               ssav.sale_attr_value_name
+        from gmall_product.spu_sale_attr ssa
+                 left join gmall_product.spu_sale_attr_value ssav on ssa.spu_id = ssav.spu_id
+            and ssa.base_sale_attr_id = ssav.base_sale_attr_id
+        where ssa.spu_id = #{spuId};
+
+    </select>
 </mapper>
