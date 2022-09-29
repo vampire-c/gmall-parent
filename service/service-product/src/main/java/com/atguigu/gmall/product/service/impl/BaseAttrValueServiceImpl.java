@@ -1,10 +1,10 @@
 package com.atguigu.gmall.product.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.gmall.product.entity.BaseAttrValue;
-import com.atguigu.gmall.product.service.BaseAttrValueService;
 import com.atguigu.gmall.product.mapper.BaseAttrValueMapper;
+import com.atguigu.gmall.product.service.BaseAttrValueService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +31,11 @@ public class BaseAttrValueServiceImpl extends ServiceImpl<BaseAttrValueMapper, B
      */
     @Override
     public List<BaseAttrValue> getAttrValueList(Long attrId) {
-        QueryWrapper<BaseAttrValue> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("attr_id", attrId);
+        // QueryWrapper<BaseAttrValue> queryWrapper = new QueryWrapper<>();
+        // queryWrapper.eq("attr_id", attrId);
+
+        LambdaQueryWrapper<BaseAttrValue> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BaseAttrValue::getAttrId, attrId);
         List<BaseAttrValue> attrValueList = this.baseAttrValueMapper.selectList(queryWrapper);
         return attrValueList;
     }

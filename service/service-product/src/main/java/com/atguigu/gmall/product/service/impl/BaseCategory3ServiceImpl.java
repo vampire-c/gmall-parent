@@ -3,7 +3,7 @@ package com.atguigu.gmall.product.service.impl;
 import com.atguigu.gmall.product.entity.BaseCategory3;
 import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
 import com.atguigu.gmall.product.service.BaseCategory3Service;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,11 @@ public class BaseCategory3ServiceImpl extends ServiceImpl<BaseCategory3Mapper, B
      */
     @Override
     public List<BaseCategory3> getCategory3(Long category_id) {
-        QueryWrapper<BaseCategory3> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category2_id", category_id);
+        // QueryWrapper<BaseCategory3> queryWrapper = new QueryWrapper<>();
+        // queryWrapper.eq("category2_id", category_id);
+
+        LambdaQueryWrapper<BaseCategory3> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BaseCategory3::getCategory2Id, category_id);
         List<BaseCategory3> list = baseCategory3Mapper.selectList(queryWrapper);
         return list;
     }
