@@ -5,15 +5,18 @@ import com.atguigu.gmall.product.vo.SkuInfoSaveVo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigDecimal;
+
 /**
-* @author Anonymous
-* @description 针对表【sku_info(库存单元表)】的数据库操作Service
-* @createDate 2022-09-26 19:16:22
-*/
+ * @author Anonymous
+ * @description 针对表【sku_info(库存单元表)】的数据库操作Service
+ * @createDate 2022-09-26 19:16:22
+ */
 public interface SkuInfoService extends IService<SkuInfo> {
 
     /**
      * 分页查询SKU列表
+     *
      * @param pageNum
      * @param limitNum
      * @return
@@ -22,7 +25,24 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     /**
      * 添加保存sku
+     *
      * @param skuInfoSaveVo
      */
     void skuInfoService(SkuInfoSaveVo skuInfoSaveVo);
+
+    /**
+     * 修改上下架状态
+     *
+     * @param skuId
+     * @param status
+     */
+    void changeOnSale(Long skuId, int status);
+
+
+    /**
+     * 查询SkuInfo的价格
+     * @param skuId
+     * @return
+     */
+    BigDecimal getSkuInfoPrice(Long skuId);
 }

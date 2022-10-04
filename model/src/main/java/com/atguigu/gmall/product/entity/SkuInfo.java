@@ -8,12 +8,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 库存单元表
+ *
  * @TableName sku_info
  */
-@TableName(value ="sku_info")
+@TableName(value = "sku_info")
 @Data
 public class SkuInfo implements Serializable {
     /**
@@ -69,4 +71,7 @@ public class SkuInfo implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    @TableField(exist = false)
+    private List<SkuImage> skuImageList;
 }

@@ -42,6 +42,7 @@ public class SkuController {
 
     /**
      * 添加保存sku
+     *
      * @param skuInfoSaveVo
      * @return
      */
@@ -50,6 +51,32 @@ public class SkuController {
     public Result saveSkuInfo(@RequestBody SkuInfoSaveVo skuInfoSaveVo) {
         skuInfoService.skuInfoService(skuInfoSaveVo);
         // log.info("sku: {}" ,skuInfoSaveVo);
+        return Result.ok();
+    }
+
+    /**
+     * 上架
+     *
+     * @param skuId
+     * @return
+     */
+    @ApiOperation("上架")
+    @GetMapping("/onSale/{skuId}")
+    public Result onSale(@PathVariable Long skuId) {
+        skuInfoService.changeOnSale(skuId, 1);
+        return Result.ok();
+    }
+
+    /**
+     * 下架
+     *
+     * @param skuId
+     * @return
+     */
+    @ApiOperation("下架")
+    @GetMapping("/cancelSale/{skuId}")
+    public Result cancelSale(@PathVariable Long skuId) {
+        skuInfoService.changeOnSale(skuId, 0);
         return Result.ok();
     }
 

@@ -14,13 +14,12 @@ spring:
             allowedHeaders: "*"
             allowCredentials: true
 
-
       routes:
         - id: service-product-route
           uri: lb://service-product
           predicates:
             - Path=/admin/product/**
-  zipkin:
-    base-url: http://192.168.179.180:9411
-    sender:
-      type: web
+        - id: web-all-route
+          uri: lb://web-all
+          predicates:
+            - Host=**.gmall.com,gmall.com

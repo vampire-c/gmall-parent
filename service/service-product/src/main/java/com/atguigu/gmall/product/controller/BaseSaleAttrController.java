@@ -39,7 +39,7 @@ public class BaseSaleAttrController {
     }
 
     /**
-     * 查询销售属性的名和值
+     * 根据spuId查询销售属性的名和值
      *
      * @param spuId
      * @return
@@ -47,7 +47,7 @@ public class BaseSaleAttrController {
     @ApiOperation("查询销售属性的名和值")
     @GetMapping("/spuSaleAttrList/{spuId}")
     public Result getSpuSaleAttrList(@PathVariable Long spuId) {
-        List<SpuSaleAttr> spuSaleAttrList = spuSaleAttrService.getSpuSaleAttrList(spuId);
+        List<SpuSaleAttr> spuSaleAttrList = spuSaleAttrService.getSpuSaleAttrAndValue(spuId);
         return Result.ok(spuSaleAttrList);
     }
 

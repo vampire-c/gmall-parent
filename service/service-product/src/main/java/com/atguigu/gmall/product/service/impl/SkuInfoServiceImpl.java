@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,6 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
-
 
     /**
      * 分页查询SKU列表
@@ -86,7 +86,6 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
                         }).collect(Collectors.toList());
         skuImageService.saveBatch(skuImageList); //批量存储skuImage 图片数据
 
-
         // 保存skuAttrValueList相关
         List<SkuAttrValue> skuAttrValueList = skuInfoSaveVo.getSkuAttrValueList() // 获取skuAttrValueList集合
                 .stream().map(item -> {
@@ -113,6 +112,30 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         skuSaleAttrValueService.saveBatch(skuSaleAttrValueList); // 批量存储SkuSaleAttrValue
         log.info("已保存, {}", skuId);
     }
+
+
+    /**
+     * 修改上下架状态
+     *
+     * @param skuId
+     * @param status
+     */
+    @Override
+    public void changeOnSale(Long skuId, int status) {
+        skuInfoMapper.updateSaleStatus(skuId, status);
+    }
+
+    /**
+     * 查询SkuInfo的价格
+     * @param skuId
+     * @return
+     */
+    @Override
+    public BigDecimal getSkuInfoPrice(Long skuId) {
+        return skuInfoMapper.getSkuInfoPrice(skuId);
+    }
+
+
 }
 
 

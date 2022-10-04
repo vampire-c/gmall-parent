@@ -2,7 +2,10 @@ package com.atguigu.gmall.product.mapper;
 
 import com.atguigu.gmall.product.entity.SkuInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 
 /**
  * @author Anonymous
@@ -13,6 +16,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SkuInfoMapper extends BaseMapper<SkuInfo> {
 
+    /**
+     * 修改上下架状态
+     *
+     * @param skuId
+     * @param status
+     */
+    void updateSaleStatus(@Param("skuId") Long skuId, @Param("status") int status);
+
+    /**
+     * 查询SkuInfo的价格
+     * @param skuId
+     * @return
+     */
+    BigDecimal getSkuInfoPrice(@Param("skuId") Long skuId);
 }
 
 

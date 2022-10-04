@@ -9,10 +9,6 @@ spring:
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-  zipkin:
-    base-url: http://192.168.179.180:9411
-    sender:
-      type: web
   servlet:
     multipart:
       max-file-size: 20MB

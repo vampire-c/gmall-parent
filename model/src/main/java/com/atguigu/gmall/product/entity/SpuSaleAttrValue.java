@@ -10,9 +10,10 @@ import java.io.Serializable;
 
 /**
  * spu销售属性值
+ *
  * @TableName spu_sale_attr_value
  */
-@TableName(value ="spu_sale_attr_value")
+@TableName(value = "spu_sale_attr_value")
 @Data
 public class SpuSaleAttrValue implements Serializable {
     /**
@@ -40,6 +41,10 @@ public class SpuSaleAttrValue implements Serializable {
      * 销售属性名称(冗余)
      */
     private String saleAttrName;
+
+    @TableField(exist = false)
+    private Integer isChecked;
+
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

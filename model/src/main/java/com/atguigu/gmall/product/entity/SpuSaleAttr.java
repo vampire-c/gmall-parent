@@ -41,6 +41,8 @@ public class SpuSaleAttr implements Serializable {
     @TableField(exist = false)
     private List<SpuSaleAttrValue> spuSaleAttrValueList;
 
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
