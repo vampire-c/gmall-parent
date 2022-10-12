@@ -23,3 +23,9 @@ spring:
           uri: lb://web-all
           predicates:
             - Host=**.gmall.com,gmall.com
+
+        # 分布式锁测试
+        - id: test-route
+          uri: lb://service-item
+          predicates:
+            - Path=/test
