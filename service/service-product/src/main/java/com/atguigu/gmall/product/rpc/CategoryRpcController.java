@@ -17,6 +17,7 @@ public class CategoryRpcController {
     @Autowired
     private CategoryBizService categoryBizService;
 
+
     /**
      * 数据库插叙所有分类, 封装程一个嵌套的树形结构
      *
@@ -27,5 +28,6 @@ public class CategoryRpcController {
         List<CategoryVo> tree = categoryBizService.getCategoryTree();
         return Result.ok(tree);
     }
+
 
 }

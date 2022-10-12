@@ -34,8 +34,8 @@
         select ssa.*,
                ssav.id vid,
                ssav.sale_attr_value_name
-        from gmall_product.spu_sale_attr ssa
-                 left join gmall_product.spu_sale_attr_value ssav on ssa.spu_id = ssav.spu_id
+        from spu_sale_attr ssa
+                 left join spu_sale_attr_value ssav on ssa.spu_id = ssav.spu_id
             and ssa.base_sale_attr_id = ssav.base_sale_attr_id
         where ssa.spu_id = #{spuId};
     </select>
@@ -47,10 +47,10 @@
                ssav.id                                       vid,
                ssav.sale_attr_value_name,
                if(skuv.sale_attr_value_id is null, '0', '1') is_checked
-        from gmall_product.spu_sale_attr ssa
-                 left join gmall_product.spu_sale_attr_value ssav on ssa.spu_id = ssav.spu_id
+        from spu_sale_attr ssa
+                 left join spu_sale_attr_value ssav on ssa.spu_id = ssav.spu_id
             and ssa.base_sale_attr_id = ssav.base_sale_attr_id
-                 left join gmall_product.sku_sale_attr_value skuv on skuv.sku_id = #{skuId}
+                 left join sku_sale_attr_value skuv on skuv.sku_id = #{skuId}
             and skuv.sale_attr_value_id = ssav.id
         where ssa.spu_id = #{spuId}
         order by ssa.base_sale_attr_id, ssav.id;
@@ -64,8 +64,8 @@
                             separator '|') attr_value_concat
         from (select skuv.sku_id,
                      skuv.sale_attr_value_id
-              from gmall_product.sku_sale_attr_value skuv
-                       left join gmall_product.spu_sale_attr_value ssav
+              from sku_sale_attr_value skuv
+                       left join spu_sale_attr_value ssav
                                  on skuv.sale_attr_value_id = ssav.id
               where skuv.spu_id = #{spuId}
               order by skuv.sku_id, ssav.base_sale_attr_id, ssav.id) a

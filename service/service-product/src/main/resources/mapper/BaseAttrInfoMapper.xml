@@ -33,8 +33,8 @@
         bav.id vid,
         bav.value_name,
         bav.attr_id
-        from gmall_product.base_attr_info bai
-        left join gmall_product.base_attr_value bav on bai.id = bav.attr_id
+        from base_attr_info bai
+        left join base_attr_value bav on bai.id = bav.attr_id
         <where>
             <if test="c1id !=0">
                 (bai.category_id = #{c1id} and bai.category_level = 1)

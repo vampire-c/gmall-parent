@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.product.entity.SkuAttrValue;
 import com.atguigu.gmall.product.entity.SkuImage;
 import com.atguigu.gmall.product.entity.SkuInfo;
@@ -10,16 +11,24 @@ import com.atguigu.gmall.product.service.SkuImageService;
 import com.atguigu.gmall.product.service.SkuInfoService;
 import com.atguigu.gmall.product.service.SkuSaleAttrValueService;
 import com.atguigu.gmall.product.vo.SkuInfoSaveVo;
+import com.atguigu.gmall.product.vo.SkuInfoUpdateVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +52,31 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    ScheduledExecutorService pool = Executors.newScheduledThreadPool(4);
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+
+    @PostConstruct
+    public void initSkuIdBloom() {
+        // 创建布隆过滤器
+        RBloomFilter<Object> skuIdBloom = redissonClient.getBloomFilter(RedisConst.BLOOM_SKUID);
+        if (!skuIdBloom.isExists()) {
+            log.info("初始化布隆过滤器...");
+            // 如果不存在则初始化
+            skuIdBloom.tryInit(1000000, 0.000001);
+            // 数据库中所有商品的id
+            List<Long> skuIds = skuInfoMapper.getAllSkuIds();
+            skuIds.forEach(item -> skuIdBloom.add(item));
+        }
+        log.info("初始化分布式布隆过滤器完成...49:{}, 50{}", skuIdBloom.contains(49L), skuIdBloom.contains(50L));
+    }
+
 
     /**
      * 分页查询SKU列表
@@ -110,6 +144,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
                     return skuSaleAttrValue;
                 }).collect(Collectors.toList());
         skuSaleAttrValueService.saveBatch(skuSaleAttrValueList); // 批量存储SkuSaleAttrValue
+
+        // 添加skuId到布隆
+        redissonClient.getBloomFilter(RedisConst.BLOOM_SKUID).add(skuId);
+
         log.info("已保存, {}", skuId);
     }
 
@@ -127,12 +165,38 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     /**
      * 查询SkuInfo的价格
+     *
      * @param skuId
      * @return
      */
     @Override
     public BigDecimal getSkuInfoPrice(Long skuId) {
         return skuInfoMapper.getSkuInfoPrice(skuId);
+    }
+
+    /**
+     * 获取所有skuId
+     *
+     * @return
+     */
+    @Override
+    public List<Long> getAllSkuIds() {
+        return skuInfoMapper.getAllSkuIds();
+    }
+
+
+    // 伪 修改SkuInfo
+    @Override
+    public void updateSkuInfo(SkuInfoUpdateVo skuInfoUpdateVo) {
+        // 数据库修改数据
+
+        // 立即删除
+        redisTemplate.delete(RedisConst.SKU_DETAIL_CACHE_PREFIX + skuInfoUpdateVo.getId());
+
+        // 延迟再次删除, 不能设置队列大小, 有OOM分险
+        pool.schedule(() -> {
+            redisTemplate.delete(RedisConst.SKU_DETAIL_CACHE_PREFIX + skuInfoUpdateVo.getId());
+        }, 10, TimeUnit.SECONDS);
     }
 
 

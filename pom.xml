@@ -8,6 +8,7 @@
         <module>model</module>
         <module>service</module>
         <module>server-gateway</module>
+        <module>mall-cache-starter</module>
     </modules>
 
     <!--引入spring boot 父工程-->
@@ -36,11 +37,18 @@
         <mysql.version>5.1.46</mysql.version>
         <swagger.version>2.7.0</swagger.version>
         <lombok.version>1.18.10</lombok.version>
+        <sharding.jdbc.version>5.1.2</sharding.jdbc.version>
     </properties>
 
     <!--配置dependencyManagement锁定依赖的版本 并不是实际的依赖。-->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>${sharding.jdbc.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>

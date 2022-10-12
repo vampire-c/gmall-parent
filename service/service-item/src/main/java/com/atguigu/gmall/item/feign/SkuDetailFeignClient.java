@@ -74,4 +74,13 @@ public interface SkuDetailFeignClient {
      */
     @GetMapping("/skuInfo/ValuesSkuJson/{spuId}")
     public Result<String> getSpuValuesSkuJson(@PathVariable Long spuId);
+
+
+    /**
+     * 获取所有skuId
+     *
+     * @return
+     */
+    @GetMapping("/skuInfo/skuIds")
+    public Result<List<Long>> getAllSkuIds();
 }

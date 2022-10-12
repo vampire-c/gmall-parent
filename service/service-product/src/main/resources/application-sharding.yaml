@@ -1,0 +1,41 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: ds_master,ds_s1,ds_s2
+
+      ds_master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3306/gmall_product?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+      ds_s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3307/gmall_product?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+      ds_s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3308/gmall_product?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+    rules:
+      readwrite-splitting:
+        data-sources:
+          product-rw-ds:
+            type: static
+            props:
+              write-data-source-name: ds_master
+              read-data-source-names: ds_s1,ds_s2
+            load-balancer-name: product_lb_alg
+        load-balancers:
+          product_lb_alg:
+            type: ROUND_ROBIN
+
+    props:
+      sql-show: false

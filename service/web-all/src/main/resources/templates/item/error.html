@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>尚品汇 产品详情</title>
+    <link rel="icon" href="/img/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/pages-item.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/pages-zoom.css"/>
+
+    <div th:include="common/head :: head"></div>
+</head>
+
+<body>
+
+<!--页面顶部-->
+<div th:include="common/header :: header"></div>
+
+<div id="itemArray">
+    <!-- 商品分类导航 -->
+    <div class="typeNav">
+        <div class="py-container">
+            <div class="yui3-g NavList">
+                <div class="all-sorts-list">
+                    <div class="yui3-u Left all-sort">
+                        <h4>全部商品分类</h4>
+                    </div>
+                </div>
+                <div class="yui3-u Center navArea">
+                    <ul class="nav">
+                        <li class="f-item">服装城</li>
+                        <li class="f-item">美妆馆</li>
+                        <li class="f-item">尚品汇超市</li>
+                        <li class="f-item">全球购</li>
+                        <li class="f-item">闪购</li>
+                        <li class="f-item">团购</li>
+                        <li class="f-item">有趣</li>
+                        <li class="f-item"><a href="http://activity.gmall.com/seckill.html" target="_blank">秒杀</a></li>
+                    </ul>
+                </div>
+                <div class="yui3-u Right"></div>
+            </div>
+        </div>
+    </div>
+    <center><h1>无此商品</h1></center>
+
+</div>
+<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery.jqzoom/zoom.js"></script>
+<script src="/js/api/activity.js"></script>
+<script src="/js/api/favorInfo.js"></script>
+<script src="/js/api/comment.js"></script>
+</body>
+</html>

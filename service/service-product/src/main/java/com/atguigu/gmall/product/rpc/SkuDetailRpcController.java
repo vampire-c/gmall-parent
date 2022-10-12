@@ -126,4 +126,16 @@ public class SkuDetailRpcController {
         return Result.ok(json);
     }
 
+
+    /**
+     * 获取所有skuId
+     *
+     * @return
+     */
+    @GetMapping("/skuInfo/skuIds")
+    public Result<List<Long>> getAllSkuIds() {
+        List<Long> ids = skuInfoService.getAllSkuIds();
+        return Result.ok(ids);
+    }
+
 }

@@ -28,5 +28,4 @@ public class SkuDetailVo {
         private String category3Name;
     }
 
-
 }

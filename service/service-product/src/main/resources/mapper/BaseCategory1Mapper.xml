@@ -13,7 +13,7 @@
         id,name
     </sql>
 
-    <resultMap id="getCategorysTreeRM" type="com.atguigu.gmall.web.CategoryVo">
+    <resultMap id="getCategoryTreeRM" type="com.atguigu.gmall.web.CategoryVo">
         <!--一级分类-->
         <id property="categoryId" column="c1id"></id>
         <result property="categoryName" column="c1name"></result>
@@ -31,16 +31,16 @@
 
     <!--数据库插叙所有分类, 封装程一个嵌套的树形结构-->
     <select id="getCategoryTree"
-            resultMap="getCategorysTreeRM">
+            resultMap="getCategoryTreeRM">
         select bc1.id   c1id,
                bc1.name c1name,
                bc2.id   c2id,
                bc2.name c2name,
                bc3.id   c3id,
                bc3.name c3name
-        from gmall_product.base_category1 bc1
-                 left join gmall_product.base_category2 bc2 on bc1.id = bc2.category1_id
-                 left join gmall_product.base_category3 bc3 on bc2.id = bc3.category2_id
+        from base_category1 bc1
+                 left join base_category2 bc2 on bc1.id = bc2.category1_id
+                 left join base_category3 bc3 on bc2.id = bc3.category2_id
     </select>
 
 
@@ -52,9 +52,9 @@
                bc2.name c2name,
                bc3.id   c3id,
                bc3.name c3name
-        from gmall_product.base_category1 bc1
-                 left join gmall_product.base_category2 bc2 on bc1.id = bc2.category1_id
-                 left join gmall_product.base_category3 bc3 on bc2.id = bc3.category2_id
+        from base_category1 bc1
+                 left join base_category2 bc2 on bc1.id = bc2.category1_id
+                 left join base_category3 bc3 on bc2.id = bc3.category2_id
         where bc3.id = #{c3Id}
     </select>
 
