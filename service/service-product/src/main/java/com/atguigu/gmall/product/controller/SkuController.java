@@ -65,7 +65,7 @@ public class SkuController {
     @ApiOperation("上架")
     @GetMapping("/onSale/{skuId}")
     public Result onSale(@PathVariable Long skuId) {
-        skuInfoService.changeOnSale(skuId, 1);
+        skuInfoService.onSale(skuId);
         return Result.ok();
     }
 

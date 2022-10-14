@@ -59,4 +59,7 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     // 修改skuInfo
     void updateSkuInfo(SkuInfoUpdateVo skuInfoUpdateVo);
+
+    // 商品上架
+    void onSale(Long skuId);
 }

@@ -1,10 +1,10 @@
 package com.atguigu.gmall.item.service.impl;
 
+import com.atguigu.gmall.cache.annotation.MallCache;
+import com.atguigu.gmall.cache.service.CacheOpsService;
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.cache.annotation.MallCache;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
-import com.atguigu.gmall.cache.service.CacheOpsService;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.product.entity.SkuImage;
 import com.atguigu.gmall.product.entity.SkuInfo;
@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -52,6 +54,9 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private ThreadPoolExecutor threadPoolExecutor;
 
     //初始化布隆过滤器
     /*
@@ -103,33 +108,113 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     private SkuDetailVo getSkuDetailVo(Long skuId) {
         SkuDetailVo skuDetailVo = new SkuDetailVo();
 
+        // 异步编排
+
         // 1.1 查sku_info信息
-        SkuInfo skuInfo = skuDetailFeignClient.getSkuInfo(skuId).getData();
+        CompletableFuture<SkuInfo> skuInfoCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            log.info("正在回源skuInfo信息...");
+            SkuInfo skuInfo = skuDetailFeignClient.getSkuInfo(skuId).getData();
+            skuDetailVo.setSkuInfo(skuInfo);
+            return skuInfo;
+        }, threadPoolExecutor);
+
         // 1.2 查询图片数据
-        List<SkuImage> skuImageList = skuDetailFeignClient.getSkuImages(skuId).getData();
-        // 1.2 赋值图片数据
-        skuInfo.setSkuImageList(skuImageList);
-        // 1.1 赋值sku_info
-        skuDetailVo.setSkuInfo(skuInfo);
+        CompletableFuture<Void> skuImageListCompletableFuture = skuInfoCompletableFuture.thenAcceptAsync(skuInfo -> {
+            List<SkuImage> skuImageList = skuDetailFeignClient.getSkuImages(skuId).getData();
+            // 1.2 赋值图片数据
+            skuInfo.setSkuImageList(skuImageList);
+        }, threadPoolExecutor);
 
         // 2.sku的三层分类信息
-        SkuDetailVo.CategoryView categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
-        skuDetailVo.setCategoryView(categoryView);
+        CompletableFuture<Void> categoryViewCompletableFuture = skuInfoCompletableFuture.thenAcceptAsync(skuInfo -> {
+            SkuDetailVo.CategoryView categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
+            skuDetailVo.setCategoryView(categoryView);
+        }, threadPoolExecutor);
 
         // 3.sku价格
-        BigDecimal price = skuDetailFeignClient.getSkuInfoPrice(skuId).getData();
-        skuDetailVo.setPrice(price);
+        CompletableFuture<Void> priceCompletableFuture = CompletableFuture.runAsync(() -> {
+            log.info("正在回源sku价格...");
+            BigDecimal price = skuDetailFeignClient.getSkuInfoPrice(skuId).getData();
+            skuDetailVo.setPrice(price);
+        }, threadPoolExecutor);
 
         // 4.sku销售属性
-        Long spuId = skuInfo.getSpuId();
-        List<SpuSaleAttr> spuSaleAttrList = skuDetailFeignClient.getSpuSaleAttrAndValueAndMarkSkuZH(spuId, skuId).getData();
-        skuDetailVo.setSpuSaleAttrList(spuSaleAttrList);
+        CompletableFuture<Void> spuSaleAttrListCompletableFuture = skuInfoCompletableFuture.thenAcceptAsync(skuInfo -> {
+            List<SpuSaleAttr> spuSaleAttrList = skuDetailFeignClient.getSpuSaleAttrAndValueAndMarkSkuZH(skuInfo.getSpuId(), skuId).getData();
+            skuDetailVo.setSpuSaleAttrList(spuSaleAttrList);
+        }, threadPoolExecutor);
 
         // 5.Json
-        String jsonStr = skuDetailFeignClient.getSpuValuesSkuJson(spuId).getData();
-        skuDetailVo.setValuesSkuJson(jsonStr);
+        CompletableFuture<Void> jsonStrCompletableFuture = skuInfoCompletableFuture.thenAcceptAsync(skuInfo -> {
+            String jsonStr = skuDetailFeignClient.getSpuValuesSkuJson(skuInfo.getSpuId()).getData();
+            skuDetailVo.setValuesSkuJson(jsonStr);
+        });
+
+        // 这些任务都结束后返回skuDetailVo
+        CompletableFuture.allOf(
+                skuImageListCompletableFuture,      // 查询图片数据
+                categoryViewCompletableFuture,      // sku的三层分类信息
+                priceCompletableFuture,             // sku价格
+                spuSaleAttrListCompletableFuture,   // sku销售属性
+                jsonStrCompletableFuture            // Json
+        ).join();
+
+        log.info("正在回源...");
         return skuDetailVo;
     }
+
+    // 自定义线程池+闭锁回源
+    /*
+    private SkuDetailVo getSkuDetailVo(Long skuId) {
+        SkuDetailVo skuDetailVo = new SkuDetailVo();
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+
+        threadPoolExecutor.execute(() -> {
+            log.info("正在回源skuInfo信息...");
+
+            // 1.1 查sku_info信息
+            SkuInfo skuInfo = skuDetailFeignClient.getSkuInfo(skuId).getData();
+            // 1.2 查询图片数据
+            List<SkuImage> skuImageList = skuDetailFeignClient.getSkuImages(skuId).getData();
+            // 1.2 赋值图片数据
+            skuInfo.setSkuImageList(skuImageList);
+            // 1.1 赋值sku_info
+            skuDetailVo.setSkuInfo(skuInfo);
+
+            // 2.sku的三层分类信息
+            SkuDetailVo.CategoryView categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id()).getData();
+            skuDetailVo.setCategoryView(categoryView);
+
+            // 4.sku销售属性
+            Long spuId = skuInfo.getSpuId();
+            List<SpuSaleAttr> spuSaleAttrList = skuDetailFeignClient.getSpuSaleAttrAndValueAndMarkSkuZH(spuId, skuId).getData();
+            skuDetailVo.setSpuSaleAttrList(spuSaleAttrList);
+
+            // 5.Json
+            String jsonStr = skuDetailFeignClient.getSpuValuesSkuJson(spuId).getData();
+            skuDetailVo.setValuesSkuJson(jsonStr);
+
+            countDownLatch.countDown();
+        });
+
+        threadPoolExecutor.execute(() -> {
+            log.info("正在回源sku价格...");
+            // 3.sku价格
+            BigDecimal price = skuDetailFeignClient.getSkuInfoPrice(skuId).getData();
+            skuDetailVo.setPrice(price);
+
+            countDownLatch.countDown();
+        });
+
+        try {
+            log.info("正在回源...");
+            countDownLatch.await(); // 等待任务执行完成
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return skuDetailVo;
+    }
+    */
 
     // 查询商品详情(分布式锁,布隆过滤器)
     public SkuDetailVo getSkuDetailWithRedissonLockAndBloomFilter(Long skuId) {

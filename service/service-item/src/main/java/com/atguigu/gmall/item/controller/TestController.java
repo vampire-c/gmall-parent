@@ -43,6 +43,7 @@ public class TestController {
 
     /**
      * 使用脚本执行redis命令解锁
+     *
      * @param uuid
      */
     private void unlock(String uuid) {
@@ -59,6 +60,7 @@ public class TestController {
 
     /**
      * 循环抢锁
+     *
      * @param uuid
      */
     private void lcok(String uuid) {
@@ -78,5 +80,17 @@ public class TestController {
         i++;
         redisTemplate.opsForValue().set("test", String.valueOf(i));
     }
+/*
+
+    @Qualifier("otherPool")
+    @Autowired
+    private ThreadPoolExecutor otherPool;
+
+    @GetMapping("/close/pool")
+    public Result closePool() {
+        otherPool.shutdown();
+        return Result.ok();
+    }
+*/
 
 }

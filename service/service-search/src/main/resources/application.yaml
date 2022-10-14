@@ -1,0 +1,13 @@
+server:
+  port: 11000
+
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+
+  elasticsearch:
+    rest:
+      uris:
+        - http://192.168.179.180:9200
+      connection-timeout: 5

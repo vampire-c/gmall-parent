@@ -199,6 +199,15 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         }, 10, TimeUnit.SECONDS);
     }
 
+    @Override
+    public void onSale(Long skuId) {
+        // 修改状态
+        this.changeOnSale(skuId, 1);
+        // 把sku保存到es中
+
+
+    }
+
 
 }
 
