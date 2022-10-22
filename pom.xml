@@ -20,7 +20,7 @@
 
     <groupId>com.atguigu.gmall</groupId>
     <artifactId>gmall-parent</artifactId>
-    <version>${gmall.version}</version>
+    <version>1.0</version>
 
     <!--父工程-->
     <packaging>pom</packaging>
