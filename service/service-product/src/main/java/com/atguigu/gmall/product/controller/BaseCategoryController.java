@@ -32,6 +32,7 @@ public class BaseCategoryController {
     private BaseCategory3Service baseCategory3Service;
 
     /**
+     * 查询一级分类
      * @return
      */
     @ApiOperation("查询一级分类")

@@ -1,7 +1,9 @@
 package com.atguigu.gmall.search;
 
 import com.atguigu.gmall.search.bean.Person;
+import com.atguigu.gmall.search.biz.SearchBizService;
 import com.atguigu.gmall.search.respository.PersonRepository;
+import com.atguigu.gmall.search.vo.SearchParamVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +50,6 @@ public class SearchRepTest {
 
     }
 
-
     @Test
     public void testSearch() {
         // // 按照id查询
@@ -70,6 +71,18 @@ public class SearchRepTest {
 
     }
 
+    @Autowired
+    private SearchBizService searchBizService;
 
-
+    @Test
+    public void testSearchBizService() {
+        SearchParamVo searchParamVo = new SearchParamVo();
+        // 分类
+        searchParamVo.setCategory3Id(61L);
+        // 属性条件
+        // searchParamVo.setProps(new String[]{"4:256GB:机身存储","2: 6.95英寸及以上:屏幕尺寸"});
+        // 品牌
+        // searchParamVo.setTrademark("2:华为");
+        searchBizService.search(searchParamVo);
+    }
 }

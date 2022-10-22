@@ -10,7 +10,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableAppThreadPool
 @EnableAutoExceptionHandle
 @EnableSwagger3 // 开启Swagger
-@EnableFeignClients
+@EnableFeignClients(basePackages = {
+        "com.atguigu.gmall.feign.product",
+        "com.atguigu.gmall.feign.search"
+})
 @SpringCloudApplication
 public class ItemMainApplication {
     public static void main(String[] args) {

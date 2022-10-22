@@ -5,14 +5,21 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.SkuAttrValueMapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.product.entity.SkuAttrValue">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="attrId" column="attr_id" jdbcType="BIGINT"/>
-            <result property="valueId" column="value_id" jdbcType="BIGINT"/>
-            <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="attrId" column="attr_id" jdbcType="BIGINT"/>
+        <result property="valueId" column="value_id" jdbcType="BIGINT"/>
+        <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,attr_id,value_id,
         sku_id
     </sql>
+    <select id="getSkuAttrAndValue" resultType="com.atguigu.gmall.search.entity.SearchAttr">
+        select sav.attr_id attrId, bai.attr_name attrName, bav.value_name attrValue
+        from sku_attr_value sav
+                 left join base_attr_info bai on bai.id = sav.attr_id
+                 left join base_attr_value bav on sav.value_id = bav.id
+        where sav.sku_id = #{skuId};
+    </select>
 </mapper>

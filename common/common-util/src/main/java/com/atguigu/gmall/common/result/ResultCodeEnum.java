@@ -4,12 +4,11 @@ import lombok.Getter;
 
 /**
  * 统一返回结果状态信息类
- *
  */
 @Getter
 public enum ResultCodeEnum {
 
-    SUCCESS(200,"成功"),
+    SUCCESS(200, "成功"),
     FAIL(201, "失败"),
     SERVICE_ERROR(2012, "服务异常"),
 
@@ -29,9 +28,10 @@ public enum ResultCodeEnum {
     COUPON_GET(220, "优惠券已经领取"),
     COUPON_LIMIT_GET(221, "优惠券已发放完毕"),
 
-    DATA_NOT_EXIST(30001,"数据不存在")
-
-    ;
+    DATA_NOT_EXIST(30001, "数据不存在"),
+    USER_PWD_INVAILD(40001, "用域名或密码错误"),
+    CART_SIZE_OVERLIMIT(50001, "购物车品类数量超出限制"),
+    CART_ITEM_OVERLIMIT(50002, "购物车单次购买商品数量超出限制");
 
     private Integer code;
 

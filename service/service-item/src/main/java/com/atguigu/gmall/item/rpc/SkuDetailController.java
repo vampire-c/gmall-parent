@@ -27,9 +27,9 @@ public class SkuDetailController {
      */
     @GetMapping("/detail/{skuId}")
     public Result<SkuDetailVo> getSkuDetail(@PathVariable Long skuId) {
-        // SkuDetailVo skuDetailVo = new SkuDetailVo();
         SkuDetailVo skuDetailVo = skuDetailService.getSkuDetail(skuId);
-        // log.info("商品详情......");
+        // 增加商品热度分
+        skuDetailService.incrHotScore(skuId);
         return Result.ok(skuDetailVo);
     }
 }

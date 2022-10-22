@@ -78,7 +78,9 @@ public class SkuController {
     @ApiOperation("下架")
     @GetMapping("/cancelSale/{skuId}")
     public Result cancelSale(@PathVariable Long skuId) {
-        skuInfoService.changeOnSale(skuId, 0);
+
+        skuInfoService.cancelSale(skuId);
+
         return Result.ok();
     }
 

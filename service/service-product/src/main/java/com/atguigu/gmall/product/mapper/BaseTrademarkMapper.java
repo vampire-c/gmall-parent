@@ -2,6 +2,7 @@ package com.atguigu.gmall.product.mapper;
 
 import com.atguigu.gmall.product.entity.BaseTrademark;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author Anonymous
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-09-26 19:16:22
 * @Entity com.atguigu.gmall.product.entity.BaseTrademark
 */
+@Repository
 public interface BaseTrademarkMapper extends BaseMapper<BaseTrademark> {
 
 }

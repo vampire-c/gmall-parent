@@ -31,6 +31,7 @@ public interface BaseAttrInfoService extends IService<BaseAttrInfo> {
 
     /**
      * 修改平台属性
+     *
      * @param baseAttrInfo
      */
     void updateAttrInfo(BaseAttrInfo baseAttrInfo);

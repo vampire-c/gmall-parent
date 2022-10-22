@@ -1,4 +1,4 @@
-package com.atguigu.gmall.web.feign;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.web.CategoryVo;
@@ -12,6 +12,10 @@ import java.util.List;
 @RequestMapping("/api/inner/product")
 public interface CategoryFeignClient {
 
+    /**
+     * 封装程一个嵌套的树形结构
+     * @return
+     */
     @GetMapping("/categorys/tree")
     Result<List<CategoryVo>> getCategoryTree();
 }

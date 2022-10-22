@@ -2,23 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-	<title>尚品汇 产品列表页</title>
-	 <link rel="icon" href="/img/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="/css/pages-list.css" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>尚品汇 产品列表页</title>
+    <link rel="icon" href="/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/pages-list.css"/>
 
     <div th:include="common/head :: head"></div>
 </head>
 
-<script >
+<script>
     $(function () {
-        $('.trademark').hover(function(){
+        $('.trademark').hover(function () {
             /*显示品牌名称*/
             $(this).children("div").show();
             $(this).children("img").hide();
-        },function(){
+        }, function () {
             // alert("come on!")
             $(this).children("div").hide();
             $(this).children("img").show();
@@ -64,7 +64,7 @@
                 <li>
                     <a href="#">全部结果</a>
                 </li>
-                <li  class="active">
+                <li class="active">
                     <span th:text="${searchParam.keyword}"></span>
                 </li>
             </ul>
@@ -90,7 +90,9 @@
                     <ul class="logo-list">
                         <li th:each="trademark:${trademarkList}">
                             <!--th:text="${trademark.tmName}"-->
-                            <a class="trademark" style="text-decoration: none;color: red" th:href="${urlParam}+'&trademark='+${trademark.tmId}+':'+${trademark.tmName}+'&order='+${searchParam.order}" th:title="${trademark.tmName}" >
+                            <a class="trademark" style="text-decoration: none;color: red"
+                               th:href="${urlParam}+'&trademark='+${trademark.tmId}+':'+${trademark.tmName}+'&order='+${searchParam.order}"
+                               th:title="${trademark.tmName}">
                                 <img th:src="${trademark.tmLogoUrl}">
                                 <div th:text="${trademark.tmName}" style="display: none"></div>
                             </a>
@@ -105,7 +107,8 @@
                     <ul class="type-list">
                         <li th:each="attrValue:${baseAttrInfo.attrValueList}">
                             <!--list.html?category3Id=61&props=-->
-                            <a th:href="${urlParam}+'&props='+${baseAttrInfo.attrId}+':'+${attrValue}+':'+${baseAttrInfo.attrName}+'&order='+${searchParam.order}" th:text="${attrValue}" >属性值111</a>
+                            <a th:href="${urlParam}+'&props='+${baseAttrInfo.attrId}+':'+${attrValue}+':'+${baseAttrInfo.attrName}+'&order='+${searchParam.order}"
+                               th:text="${attrValue}">属性值111</a>
                         </li>
                     </ul>
                 </div>
@@ -145,7 +148,8 @@
                     <li class="yui3-u-1-5" th:each="goods: ${goodsList}">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <a th:href="@{http://item.gmall.com/{id}.html(id=${goods.id})}" target="_blank"><img th:src="${goods.defaultImg}"/></a>
+                                <a th:href="@{http://item.gmall.com/{id}.html(id=${goods.id})}" target="_blank"><img
+                                        th:src="${goods.defaultImg}"/></a>
                             </div>
                             <div class="price">
                                 <strong>
@@ -154,7 +158,8 @@
                                 </strong>
                             </div>
                             <div class="attr">
-                                <a th:href="@{http://item.gmall.com/{id}.html(id=${goods.id})}" target="_blank" th:utext="${goods.title}">Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s (A1699)</a>
+                                <a th:href="@{http://item.gmall.com/{id}.html(id=${goods.id})}" target="_blank" th:utext="${goods.title}">Apple苹果iPhone
+                                    6s (A1699)Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s (A1699)</a>
                             </div>
                             <div class="commit">
                                 <i class="command">已有<span>2000</span>人评价</i>
@@ -201,7 +206,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="./img/like_01.png" />
+                                <img src="./img/like_01.png"/>
                             </div>
                             <div class="attr">
                                 <em>Apple苹果iPhone 6s (A1699)</em>
@@ -220,7 +225,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="./img/like_03.png" />
+                                <img src="./img/like_03.png"/>
                             </div>
                             <div class="attr">
                                 <em>金属A面，360°翻转，APP下单省300！</em>
@@ -239,7 +244,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="./img/like_04.png" />
+                                <img src="./img/like_04.png"/>
                             </div>
                             <div class="attr">
                                 <em>256SSD商务大咖，完爆职场，APP下单立减200</em>
@@ -258,7 +263,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="./img/like_02.png" />
+                                <img src="./img/like_02.png"/>
                             </div>
                             <div class="attr">
                                 <em>Apple苹果iPhone 6s (A1699)</em>
@@ -376,7 +381,7 @@
                 <div style="visibility: hidden;" class="J-content toolbar-panel tbar-panel-cart toolbar-animate-out">
                     <h3 class="tbar-panel-header J-panel-header">
                         <a href="" class="title"><i></i><em class="title">购物车</em></a>
-                        <span class="close-panel J-close" onclick="cartPanelView.tbar_panel_close('cart');" ></span>
+                        <span class="close-panel J-close" onclick="cartPanelView.tbar_panel_close('cart');"></span>
                     </h3>
                     <div class="tbar-panel-main">
                         <div class="tbar-panel-content J-panel-content">
@@ -396,8 +401,8 @@
                     <!-- 小计 -->
                     <div id="cart-footer" class="tbar-panel-footer J-panel-footer">
                         <div class="tbar-checkout">
-                            <div class="jtc-number"> <strong class="J-count" id="cart-number">0</strong>件商品 </div>
-                            <div class="jtc-sum"> 共计：<strong class="J-total" id="cart-sum">¥0</strong> </div>
+                            <div class="jtc-number"><strong class="J-count" id="cart-number">0</strong>件商品</div>
+                            <div class="jtc-sum"> 共计：<strong class="J-total" id="cart-sum">¥0</strong></div>
                             <a class="jtc-btn J-btn" href="#none" target="_blank">去购物车结算</a>
                         </div>
                     </div>
@@ -412,7 +417,7 @@
                     <div class="tbar-panel-main">
                         <div class="tbar-panel-content J-panel-content">
                             <div class="tbar-tipbox2">
-                                <div class="tip-inner"> <i class="i-loading"></i> </div>
+                                <div class="tip-inner"><i class="i-loading"></i></div>
                             </div>
                         </div>
                     </div>
@@ -453,17 +458,17 @@
 
             <!-- 侧栏按钮 -->
             <div class="toolbar-tabs J-tab">
-                <div onclick="cartPanelView.tabItemClick('cart')" class="toolbar-tab tbar-tab-cart" data="购物车" tag="cart" >
+                <div onclick="cartPanelView.tabItemClick('cart')" class="toolbar-tab tbar-tab-cart" data="购物车" tag="cart">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count " id="tab-sub-cart-count">0</span>
                 </div>
-                <div onclick="cartPanelView.tabItemClick('follow')" class="toolbar-tab tbar-tab-follow" data="我的关注" tag="follow" >
+                <div onclick="cartPanelView.tabItemClick('follow')" class="toolbar-tab tbar-tab-follow" data="我的关注" tag="follow">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count hide">0</span>
                 </div>
-                <div onclick="cartPanelView.tabItemClick('history')" class="toolbar-tab tbar-tab-history" data="我的足迹" tag="history" >
+                <div onclick="cartPanelView.tabItemClick('history')" class="toolbar-tab tbar-tab-history" data="我的足迹" tag="history">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count hide">0</span>
@@ -471,8 +476,9 @@
             </div>
 
             <div class="toolbar-footer">
-                <div class="toolbar-tab tbar-tab-top" > <a href="#"> <i class="tab-ico  "></i> <em class="footer-tab-text">顶部</em> </a> </div>
-                <div class="toolbar-tab tbar-tab-feedback" > <a href="#" target="_blank"> <i class="tab-ico"></i> <em class="footer-tab-text ">反馈</em> </a> </div>
+                <div class="toolbar-tab tbar-tab-top"><a href="#"> <i class="tab-ico  "></i> <em class="footer-tab-text">顶部</em> </a></div>
+                <div class="toolbar-tab tbar-tab-feedback"><a href="#" target="_blank"> <i class="tab-ico"></i> <em class="footer-tab-text ">反馈</em>
+                </a></div>
             </div>
 
             <div class="toolbar-mini"></div>

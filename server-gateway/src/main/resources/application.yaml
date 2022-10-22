@@ -15,10 +15,24 @@ spring:
             allowCredentials: true
 
       routes:
+        # /api/product/** 转给服务service-product
         - id: service-product-route
           uri: lb://service-product
           predicates:
-            - Path=/admin/product/**
+            - Path=/admin/product/**, /search/test/**
+
+        # /api/user/** 转给服务service-user
+        - id: service-user-route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/user/**
+
+        # /api/cart/** 转给服务service-cart
+        - id: service-cart-route
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**
+
         - id: web-all-route
           uri: lb://web-all
           predicates:
@@ -28,4 +42,18 @@ spring:
         - id: test-route
           uri: lb://service-item
           predicates:
-            - Path=/test
+            - Path=/test1
+
+app:
+  auth:
+    noAuthUrl: # 直接放行的资源
+      - /js/**
+      - /css/**
+      - /img/**
+    denyUrl: # 不可访问资源
+      - /api/inner/**
+    loginAuthUrl: # 需要登录才能访问的资源
+      - /order/**
+      - /seckill/**
+      - /search/test/**
+    loginPage: http://passport.gmall.com/login.html # 登录异常,需要返回到登录页

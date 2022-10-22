@@ -2,7 +2,7 @@ package com.atguigu.gmall.web.controller;
 
 
 import com.atguigu.gmall.web.SkuDetailVo;
-import com.atguigu.gmall.web.feign.ItemFeignClient;
+import com.atguigu.gmall.feign.item.ItemFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +24,11 @@ public class ItemController {
      */
     @GetMapping("/{skuId}.html")
     public String item(@PathVariable Long skuId, Model model) {
-
+        SkuDetailVo skuDetailVo = null;
         // 远程调用 service-item 获取商品详情数据
-        SkuDetailVo skuDetailVo = itemFeignClient.getSkuDetail(skuId).getData();
+        skuDetailVo = itemFeignClient.getSkuDetail(skuId).getData();
 
-        if (StringUtils.isEmpty(skuDetailVo)){
+        if (StringUtils.isEmpty(skuDetailVo)) {
             return "item/error";
 
         }

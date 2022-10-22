@@ -18,10 +18,27 @@
     </properties>
 
     <dependencies>
+        <!--common-->
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>common-util</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!--model-->
+        <dependency>
+            <groupId>com.atguigu.gmall</groupId>
+            <artifactId>model</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!--ridis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
         <!-- 服务注册 -->

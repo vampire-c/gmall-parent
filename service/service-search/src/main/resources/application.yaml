@@ -11,3 +11,9 @@ spring:
       uris:
         - http://192.168.179.180:9200
       connection-timeout: 5
+
+logging:
+  level:
+    tracer: trace # 开启追踪器
+    com.atguigu.gmall.search.biz: trace # 打印详细日志org.springframework.data.elasticsearch.core
+    org.springframework.data.elasticsearch: trace

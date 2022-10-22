@@ -12,5 +12,9 @@ public interface SkuDetailService {
     SkuDetailVo getSkuDetail(Long skuId);
 
 
-
+    /**
+     * 增加商品热度分
+     * @param skuId
+     */
+    void incrHotScore(Long skuId);
 }

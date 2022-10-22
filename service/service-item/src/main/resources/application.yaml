@@ -2,6 +2,8 @@ server:
   port: 10000
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 

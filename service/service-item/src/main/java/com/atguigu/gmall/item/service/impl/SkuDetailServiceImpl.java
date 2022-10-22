@@ -4,7 +4,8 @@ import com.atguigu.gmall.cache.annotation.MallCache;
 import com.atguigu.gmall.cache.service.CacheOpsService;
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.product.entity.SkuImage;
 import com.atguigu.gmall.product.entity.SkuInfo;
@@ -31,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SkuDetailServiceImpl implements SkuDetailService {
 
-
     @Autowired
     private SkuDetailFeignClient skuDetailFeignClient;
     //Could not autowire. No beans of 'SkuDetailFeignClient' type found.
@@ -51,12 +51,14 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     private CacheOpsService cacheOpsService;
 
-
     @Autowired
     private RedissonClient redissonClient;
 
     @Autowired
     private ThreadPoolExecutor threadPoolExecutor;
+
+    @Autowired
+    private SearchFeignClient searchFeignClient;
 
     //初始化布隆过滤器
     /*
@@ -98,6 +100,19 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return skuDetailVo;
     }
 
+    /**
+     * 增加商品热度分
+     *
+     * @param skuId
+     */
+    @Override
+    public void incrHotScore(Long skuId) {
+        Long increment = redisTemplate.opsForValue().increment(RedisConst.HOTSCORE + skuId);
+        if (increment % 100 == 0) {
+            searchFeignClient.updateHotScore(skuId, increment);
+        }
+    }
+
 
     /**
      * feign远程调用从数据库获取数据 (数据回源)
@@ -107,7 +122,6 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      */
     private SkuDetailVo getSkuDetailVo(Long skuId) {
         SkuDetailVo skuDetailVo = new SkuDetailVo();
-
         // 异步编排
 
         // 1.1 查sku_info信息
@@ -253,7 +267,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
                     log.info("商品详情回源... {}", skuId);
 
                     // 10 数据放入缓存
-                    cacheOpsService.saveCacheData(key, skuDetailVo1, RedisConst.TEMP_DATA_TTL, RedisConst.TEMP_DATA_TTL_UNIT);
+                    cacheOpsService.saveCacheData(key, skuDetailVo1, RedisConst.TEMP_DATA_TTL, RedisConst.TTL_UNIT_DAYS);
                 }
                 return skuDetailVo1;
             } finally {

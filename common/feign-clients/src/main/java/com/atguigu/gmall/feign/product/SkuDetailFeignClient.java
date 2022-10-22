@@ -1,4 +1,4 @@
-package com.atguigu.gmall.item.feign;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.product.entity.SkuImage;

@@ -6,5 +6,4 @@ import lombok.Data;
 public class ValueSkuJsonDTO {
         private Long skuId;
         private String attrValueConcat;
-
 }
