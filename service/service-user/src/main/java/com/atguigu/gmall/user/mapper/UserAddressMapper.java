@@ -2,6 +2,7 @@ package com.atguigu.gmall.user.mapper;
 
 import com.atguigu.gmall.user.entity.UserAddress;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author Anonymous
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-10-19 09:13:19
 * @Entity com.atguigu.gmall.user.entity.UserAddress
 */
+@Repository
 public interface UserAddressMapper extends BaseMapper<UserAddress> {
 
 }

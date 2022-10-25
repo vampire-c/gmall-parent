@@ -11,15 +11,13 @@ public class RedisConst {
     public static final String REDIS_LOCK_PREFIX = "lock-";
     // "x"
     public static final String TEMP_DATA = "x";
-    // "x" 临时时间
-    public static final long TEMP_DATA_TTL_X = 1L;
-    // 时间单位HOURS
+    // 时间单位 HOURS
     public static final TimeUnit TTL_UNIT_HOURS = TimeUnit.HOURS;
     // skuId布隆过滤器
     public static final String BLOOM_SKUID = "skuId-bloom";
     // 临时时间
     public static final Long TEMP_DATA_TTL = 7L;
-    // 时间单位DAY
+    // 时间单位 DAYS
     public static final TimeUnit TTL_UNIT_DAYS = TimeUnit.DAYS;
     // 热度分
     public static final String HOTSCORE = "hotscore:";
@@ -41,4 +39,12 @@ public class RedisConst {
     public static final Integer CART_ITEM_LENGTH = 100;
     // 临时购物车过期时间
     public static final long TEMP_CART_TTL = 30L;
+    // 订单交易号
+    public static final String ORDER_TRADE_NO = "order:tradeNo:";
+    // 订单交易号过期时间
+    public static final long ORDER_TRADE_NO_TTL = 30;
+    // 时间单位 MINUTES
+    public static final TimeUnit TTL_UNIT_MINUTES = TimeUnit.MINUTES;
+    // 订单过期时间
+    public static final long ORDER_TTL = 30 * 60 * 1000;
 }

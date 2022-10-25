@@ -1,0 +1,152 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: order_0_master, order_0_slave01, order_0_slave02, order_1_master, order_1_slave01, order_1_slave02
+
+      # 配置数据库
+      order_0_master: # order_0_master 主 订单0
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3306/gmall_order_0?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+      order_1_master: # order_1_master 主 订单1
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3306/gmall_order_1?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+      order_0_slave01: # order_0_slave01 从01 订单0
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3307/gmall_order_0?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+      order_1_slave01: # order_1_slave01 从01 订单1
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3307/gmall_order_1?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+      order_0_slave02: # order_0_slave02 从02 订单0
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3308/gmall_order_0?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+      order_1_slave02: # order_1_slave02 从02 订单1
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.179.180:3308/gmall_order_1?serverTimezone=UTC&useSSL=false
+        username: root
+        password: 123456
+
+    rules:
+      # 配置读写分离
+      readwrite-splitting:
+        data-sources:
+          # 订单0的读写分离
+          order0-rw-ds:
+            type: static
+            props:
+              write-data-source-name: order_0_master
+              read-data-source-names: order_0_slave01, order_0_slave02
+            load-balancer-name: lb_alg
+
+          # 订单1的读写分离
+          order1-rw-ds:
+            type: static
+            props:
+              write-data-source-name: order_1_master
+              read-data-source-names: order_1_slave01, order_1_slave02
+            load-balancer-name: lb_alg
+
+        # 负载均衡算法
+        load-balancers:
+          lb_alg:
+            type: ROUND_ROBIN
+
+
+      # 配置分库分表
+      sharding:
+        default-database-strategy:
+          standard:
+            sharding-algorithm-name: user-id-db-sharding-alg
+            sharding-column: user_id
+        # 绑定表关系
+        binding-tables:
+          - order_info, order_detail
+          - order_info, order_status_log
+          - order_info, payment_info
+
+        # 逻辑表所在的真实节点
+        tables:
+          order_info:
+            actual-data-nodes: order$->{0..1}-rw-ds.order_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: order-info-shard-alg
+
+            key-generate-strategy:
+              column: id
+              key-generator-name: snow-id-gen
+
+
+          order_detail:
+            actual-data-nodes: order$->{0..1}-rw-ds.order_detail_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: order-detail-shard-alg
+          order_status_log:
+            actual-data-nodes: order$->{0..1}-rw-ds.order_status_log_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: order-status-log-shard-alg
+          payment_info:
+            actual-data-nodes: order$->{0..1}-rw-ds.payment_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: payment-info-shard-alg
+
+        # 分片算法
+        sharding-algorithms:
+          # 分库算法规则
+          user-id-db-sharding-alg:
+            type: INLINE
+            props:
+              algorithm-expression: order$->{user_id % 2}-rw-ds
+
+          # 分表算法规则
+          order-info-shard-alg:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+          order-detail-shard-alg:
+            type: INLINE
+            props:
+              algorithm-expression: order_detail_$->{user_id % 3}
+          order-status-log-shard-alg:
+            type: INLINE
+            props:
+              algorithm-expression: order_status_log_$->{user_id % 3}
+          payment-info-shard-alg:
+            type: INLINE
+            props:
+              algorithm-expression: payment_info_$->{user_id % 3}
+
+        key-generators:
+          snow-id-gen:
+            type: SNOWFLAKE
+            props:
+              worker-id: ${random.int(1000)}
+
+
+    # sql打印
+    props:
+      sql-show: true

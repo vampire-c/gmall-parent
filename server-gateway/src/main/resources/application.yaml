@@ -33,6 +33,12 @@ spring:
           predicates:
             - Path=/api/cart/**
 
+        # /api/order/** 转给服务service-order
+        - id: service-order-route
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/**
+
         - id: web-all-route
           uri: lb://web-all
           predicates:
@@ -53,7 +59,6 @@ app:
     denyUrl: # 不可访问资源
       - /api/inner/**
     loginAuthUrl: # 需要登录才能访问的资源
-      - /order/**
-      - /seckill/**
-      - /search/test/**
+      - /trade.html
+      - /**/auth/**
     loginPage: http://passport.gmall.com/login.html # 登录异常,需要返回到登录页

@@ -1,5 +1,6 @@
 package com.atguigu.gmall.cart.rpc;
 
+import com.atguigu.gmall.cart.entity.CartItem;
 import com.atguigu.gmall.cart.service.CartBizService;
 import com.atguigu.gmall.cart.vo.AddCartSuccessVo;
 import com.atguigu.gmall.common.result.Result;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/inner/cart")
@@ -49,6 +52,19 @@ public class CartRpcController {
     public Result deleteChecked() {
         cartBizService.deleteChecked();
         return Result.ok();
+    }
+
+
+    /**
+     * 获取选中的商品集合
+     *
+     * @return
+     */
+    @GetMapping("/getCheckCartItems")
+    public Result<List<CartItem>> getCheckCartItems() {
+        String cartKey = cartBizService.determineCartKey();
+        List<CartItem> checkedCartItemList = cartBizService.getCheckedCartItemList(cartKey);
+        return Result.ok(checkedCartItemList);
     }
 
 
