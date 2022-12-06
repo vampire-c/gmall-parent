@@ -103,9 +103,10 @@ public class MallCacheAspect {
                 boolean b = lock.tryLock();
                 if (b) {
                     lockStatus = b;
-                    // 加锁成功回源
+                    // 加锁成功 -> 回源
                     // 目标方法执行, 有异常抛出, 否则多切面下可能会引起切面逻辑失效
                     result = pjp.proceed(pjp.getArgs());
+                    // 写入缓存
                     cacheOpsService.saveCacheData(cacheKey, result, mallCache.ttl(), mallCache.unit());
                     return result;
                 } else {

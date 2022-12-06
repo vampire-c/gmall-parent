@@ -39,6 +39,12 @@ spring:
           predicates:
             - Path=/api/order/**
 
+        # /api/payment/** 转给服务service-payment
+        - id: service-payment-route
+          uri: lb://service-payment
+          predicates:
+            - Path=/api/payment/**
+
         - id: web-all-route
           uri: lb://web-all
           predicates:
@@ -61,4 +67,5 @@ app:
     loginAuthUrl: # 需要登录才能访问的资源
       - /trade.html
       - /**/auth/**
+      - /pay.html
     loginPage: http://passport.gmall.com/login.html # 登录异常,需要返回到登录页

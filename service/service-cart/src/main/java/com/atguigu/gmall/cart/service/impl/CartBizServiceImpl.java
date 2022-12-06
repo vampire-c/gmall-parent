@@ -17,8 +17,6 @@ import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -152,16 +150,16 @@ public class CartBizServiceImpl implements CartBizService {
                 .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
                 .collect(Collectors.toList());
 
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        // RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
 
         // 启动异步任务
         CompletableFuture.runAsync(() -> {
             // 共享旧线程
-            RequestContextHolder.setRequestAttributes(attributes);
+            // RequestContextHolder.setRequestAttributes(attributes);
             // 更新商品价格
             updateCartItemPrice(cartKey, cartItemList);
             // 移除
-            RequestContextHolder.resetRequestAttributes();
+            // RequestContextHolder.resetRequestAttributes();
         }, threadPoolExecutor);
 
         return cartItemList;
@@ -278,7 +276,8 @@ public class CartBizServiceImpl implements CartBizService {
         // 获取商品集合
         List<CartItem> cartItemList = getCartItemList(cartKey);
         List<CartItem> checkedCartItemList = cartItemList.stream()
-                .filter(cartItem -> cartItem.getIsChecked() == 1) // 过滤保留isChecked=1(选中的商品)
+                // 过滤保留isChecked=1(选中的商品)
+                .filter(cartItem -> 1 == cartItem.getIsChecked())
                 .collect(Collectors.toList());
         return checkedCartItemList;
     }

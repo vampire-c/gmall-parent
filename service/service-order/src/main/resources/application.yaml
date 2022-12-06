@@ -5,7 +5,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    include: sharding
+    include: sharding, rabbit
 
 #  datasource:
 #    url: jdbc:mysql://192.168.179.180:3306/gmall_order?useSSL=false

@@ -28,5 +28,8 @@ public class DetailVo {
     @NotBlank(message = "商品默认图片不能为空")
     private String imgUrl;
 
+    // 是否有库存
+    private String hasStock = "1";
+
 
 }

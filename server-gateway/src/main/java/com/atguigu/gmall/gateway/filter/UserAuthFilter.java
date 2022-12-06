@@ -108,6 +108,7 @@ public class UserAuthFilter implements GlobalFilter {
 
     /**
      * 普通请求没带token,没登录,,,,带了,透传临时id, 放行
+     *
      * @param exchange
      * @param chain
      * @return
@@ -115,8 +116,11 @@ public class UserAuthFilter implements GlobalFilter {
     private Mono<Void> userTempIdThrought(ServerWebExchange exchange, GatewayFilterChain chain) {
         String tempId = getUserTempId(exchange);
         // 根据旧请求, 创建新请求, 并且添加请求头
-        ServerHttpRequest newRequest = exchange.getRequest() // 获取请求
-                .mutate() // 变异返回一个请求
+        // 获取旧请求
+        ServerHttpRequest newRequest = exchange.getRequest()
+                // 变异返回一个请求
+                .mutate()
+                // 添加请求头
                 .header(RedisConst.USER_TEMP_ID_HEADER, tempId)
                 .build();
         // 根据新请求和旧相应, 创建新的newExchange
@@ -157,13 +161,15 @@ public class UserAuthFilter implements GlobalFilter {
         // 添加用户id到请求头, 但是不允许修改
         // exchange.getRequest().getHeaders() // 获取到请求头
         //         .add(RedisConst.USER_ID_HEADER, String.valueOf(userInfo.getId())); // 添加请求头
-
         String tempId = getUserTempId(exchange);
 
-        // 根据旧请求, 创建新请求, 并且添加请求头
-        ServerHttpRequest newRequest = exchange.getRequest() // 获取请求
+        // 根据旧请求, 创建新请求, 并且添加旧请求的请求头
+
+        // 获取旧请求
+        ServerHttpRequest newRequest = exchange.getRequest()
                 .mutate() // 变异返回一个请求
-                .header(RedisConst.USER_ID_HEADER, String.valueOf(userInfo.getId())) // 添加到请求头
+                // 添加请求头(用户id,临时id)
+                .header(RedisConst.USER_ID_HEADER, String.valueOf(userInfo.getId()))
                 .header(RedisConst.USER_TEMP_ID_HEADER, tempId)
                 .build();
         // 根据新请求和旧相应, 创建新的newExchange
@@ -177,12 +183,13 @@ public class UserAuthFilter implements GlobalFilter {
 
     /**
      * 获取userTempId
+     *
      * @param exchange
      * @return
      */
     private String getUserTempId(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        String userTempId  = "";
+        String userTempId = "";
         // 从cookie中获取token
         HttpCookie cookie = request.getCookies().getFirst("userTempId");
         if (!StringUtils.isEmpty(cookie)) {
@@ -221,16 +228,20 @@ public class UserAuthFilter implements GlobalFilter {
         ServerHttpResponse response = exchange.getResponse();
         // 获取uri
         String uri = exchange.getRequest().getURI().toString();
-        // 相应状态码
+        // 响应状态码
         response.setStatusCode(HttpStatus.FOUND);
-        // 相应头 Location: http://passport.gmall.com/login.html?originUrl= 上一个页面地址(uri)
+        // 响应头 Location: http://passport.gmall.com/login.html?originUrl= 上一个页面地址(uri)
         response.getHeaders().add("Location", loginPage + "?originUrl=" + uri);
-        // 清空假的token令牌, 创建并添加一个立即过期的cookie(token令牌)
-        ResponseCookie token = ResponseCookie.from("token", "") // 创建cookie(token令牌)
-                .domain(".gmall.com") // 域名范围内有效
-                .maxAge(0) // 立即过期
+        // 清空假的token令牌 -> 创建并添加一个立即过期的cookie(token令牌)
+        // 创建cookie(token令牌)
+        ResponseCookie token = ResponseCookie.from("token", "")
+                // 域名范围内有效
+                .domain(".gmall.com")
+                // 立即过期
+                .maxAge(0)
                 .build();
-        response.addCookie(token); // 添加cookie,覆盖旧的错误token令牌
+        // 添加cookie,覆盖旧的错误token令牌
+        response.addCookie(token);
         return response.setComplete();
     }
 

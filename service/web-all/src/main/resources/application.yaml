@@ -7,3 +7,25 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+
+#抽取到nacos
+#feign:
+#  sentinel:
+#    enabled: true
+
+
+#抽取到nacos
+#feign:
+#  client:
+#    config:
+#      # 默认配置
+#      default:
+#        connect-timeout: 1000
+#        read-timeout: 3000
+#        retryer: com.atguigu.gmall.feign.retry.MyNeverRetryer
+
+#      # 精确配置
+#      service-product:
+#        connect-timeout: 1000
+#        read-timeout: 4000
+#        retryer: com.atguigu.gmall.web.retry.MyNeverRetryer

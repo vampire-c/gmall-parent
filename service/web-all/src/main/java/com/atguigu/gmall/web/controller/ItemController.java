@@ -30,7 +30,6 @@ public class ItemController {
 
         if (StringUtils.isEmpty(skuDetailVo)) {
             return "item/error";
-
         }
 
         // categoryView {category1Id,category1Name,category2Id,category2Name,category3Id,category3Name}

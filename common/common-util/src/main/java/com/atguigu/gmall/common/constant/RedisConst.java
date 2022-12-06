@@ -47,4 +47,5 @@ public class RedisConst {
     public static final TimeUnit TTL_UNIT_MINUTES = TimeUnit.MINUTES;
     // 订单过期时间
     public static final long ORDER_TTL = 30 * 60 * 1000;
+    public static final String MQ_RETRY = "mq:retryCount:";
 }

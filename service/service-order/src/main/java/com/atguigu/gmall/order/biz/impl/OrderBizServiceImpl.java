@@ -4,27 +4,40 @@ import com.atguigu.gmall.cart.entity.CartItem;
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.execption.GmallException;
 import com.atguigu.gmall.common.result.ResultCodeEnum;
+import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.common.util.UserAuthUtils;
 import com.atguigu.gmall.enums.OrderStatus;
 import com.atguigu.gmall.enums.ProcessStatus;
 import com.atguigu.gmall.feign.cart.CartFeignClient;
 import com.atguigu.gmall.feign.product.SkuDetailFeignClient;
 import com.atguigu.gmall.feign.user.UserFeignClient;
+import com.atguigu.gmall.feign.ware.WareFeignClient;
 import com.atguigu.gmall.order.biz.OrderBizService;
 import com.atguigu.gmall.order.entity.OrderDetail;
 import com.atguigu.gmall.order.entity.OrderInfo;
 import com.atguigu.gmall.order.entity.OrderStatusLog;
+import com.atguigu.gmall.order.entity.PaymentInfo;
+import com.atguigu.gmall.order.mapper.OrderInfoMapper;
 import com.atguigu.gmall.order.service.OrderDetailService;
 import com.atguigu.gmall.order.service.OrderInfoService;
 import com.atguigu.gmall.order.service.OrderStatusLogService;
+import com.atguigu.gmall.order.service.PaymentInfoService;
+import com.atguigu.gmall.order.to.OrderMsgTo;
 import com.atguigu.gmall.order.vo.DetailVo;
 import com.atguigu.gmall.order.vo.OrderConfirmVo;
 import com.atguigu.gmall.order.vo.OrderSubmitVo;
 import com.atguigu.gmall.user.entity.UserAddress;
+import com.atguigu.gmall.util.consts.MqConst;
+import com.atguigu.gmall.ware.WareStockMsg;
+import com.atguigu.gmall.ware.WareStockResultMsg;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -32,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -56,10 +70,23 @@ public class OrderBizServiceImpl implements OrderBizService {
     private OrderInfoService orderInfoService;
 
     @Autowired
+    private OrderInfoMapper orderInfoMapper;
+
+
+    @Autowired
     private OrderDetailService orderDetailService;
 
     @Autowired
     private OrderStatusLogService orderStatusLogService;
+
+    @Autowired
+    private WareFeignClient wareFeignClient;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private PaymentInfoService paymentInfoService;
 
     /**
      * 获取订单结算数据
@@ -77,11 +104,18 @@ public class OrderBizServiceImpl implements OrderBizService {
         List<DetailVo> detailVoList = cartItemList.stream()
                 .map(cartItem -> {
                     DetailVo detailVo = new DetailVo();
+                    // 商品id
                     detailVo.setSkuId(cartItem.getSkuId());
+                    // 商品名
                     detailVo.setSkuName(cartItem.getSkuName());
+                    // 商品数量
                     detailVo.setSkuNum(cartItem.getSkuNum());
+                    // 商品价格
                     detailVo.setOrderPrice(cartItem.getSkuPrice());
+                    // 默认图片
                     detailVo.setImgUrl(cartItem.getSkuDefaultImg());
+                    // 是否有库存
+                    detailVo.setHasStock(wareFeignClient.hasStock(cartItem.getSkuId(), cartItem.getSkuNum()));
                     return detailVo;
                 }).collect(Collectors.toList());
         orderConfirmVo.setDetailArrayList(detailVoList);
@@ -130,7 +164,7 @@ public class OrderBizServiceImpl implements OrderBizService {
      */
     @Override
     public Long submitOrder(String tradeNo, OrderSubmitVo orderSubmitVo) {
-        // 重复校验
+        // 重复请求校验
         /*
         Boolean hasKey = redisTemplate.hasKey(RedisConst.ORDER_TRADE_NO + tradeNo);
         if (hasKey) {
@@ -153,16 +187,31 @@ public class OrderBizServiceImpl implements OrderBizService {
                 Arrays.asList(RedisConst.ORDER_TRADE_NO + tradeNo));
         if (0 == aLong) {
             // 重复的请求或假请求
+            log.info("重复的请求或非法请求");
             throw new GmallException(ResultCodeEnum.REQ_REPEAT);
         }
         /*
-        // 重复请求
+        // 重复请求校验
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
          */
+
+        // 库存校验
+        List<DetailVo> NoHasStockDetailVoList = orderSubmitVo.getOrderDetailList().stream()
+                .filter(detailVo -> {
+                    // 库存校验
+                    String stock = wareFeignClient.hasStock(detailVo.getSkuId(), detailVo.getSkuNum());
+                    return "0".equals(stock);
+                }).collect(Collectors.toList());
+        if (!StringUtils.isEmpty(NoHasStockDetailVoList) && NoHasStockDetailVoList.size() > 0) {
+            // 商品价格发生异常
+            log.info("商品库存异常: {}", NoHasStockDetailVoList);
+            throw new GmallException(ResultCodeEnum.SKU_HAS_NO_STOCK);
+        }
+
 
         // 商品价格校验
         List<DetailVo> detailVoList = orderSubmitVo.getOrderDetailList().stream()
@@ -181,9 +230,40 @@ public class OrderBizServiceImpl implements OrderBizService {
         }
 
         // 保存订单到数据库
-        return saveOrder(tradeNo, orderSubmitVo);
+        Long orderId = saveOrder(tradeNo, orderSubmitVo);
+
+        // 移除购物车中选中的商品
+        cartFeignClient.deleteChecked();
+        log.info("保存订单,移除购物车中商品");
+
+        // 30分钟不支付就关闭订单
+        Long userId = UserAuthUtils.getUserAuthInfo().getUserInfoId();
+        // 延时任务
+        /*
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(4);
+        scheduledExecutorService.schedule(() -> {
+            closeOrder(orderId, userId);
+        }, 30, TimeUnit.MINUTES);
+        */
+        // 延时MQ消息
+        OrderMsgTo orderMsgTo = new OrderMsgTo(orderId, userId);
+        rabbitTemplate.convertAndSend(
+                MqConst.ORDER_EVENT_EXCHANGE,
+                MqConst.RK_ORDER_CREATED,
+                Jsons.toString(orderMsgTo));
+        log.info("发送30分钟后关闭订单的MQ:{}", orderMsgTo);
+
+        // 返回订单id
+        return orderId;
     }
 
+    /**
+     * 保存订单
+     *
+     * @param tradeNo
+     * @param orderSubmitVo
+     * @return
+     */
     @Override
     public Long saveOrder(String tradeNo, OrderSubmitVo orderSubmitVo) {
         // 保存 order_info 订单
@@ -193,6 +273,218 @@ public class OrderBizServiceImpl implements OrderBizService {
         // 保存 order_status_log 操作日志
         saveOrderStatusLog(orderInfo);
         return orderInfo.getId();
+    }
+
+    @Scheduled(cron = "0 */30 * ? * *")
+    private void scanAndCloserOrder() {
+
+    }
+
+
+    /**
+     * 关闭订单
+     *
+     * @param orderId
+     */
+    @Override
+    public void closeOrder(Long orderId, Long userId) {
+        changeOrderStatusByCAS(
+                Arrays.asList(OrderStatus.UNPAID),
+                Arrays.asList(ProcessStatus.UNPAID),
+                OrderStatus.CLOSED,
+                ProcessStatus.CLOSED,
+                orderId,
+                userId);
+    }
+
+    /**
+     * 修改订单详细状态
+     *
+     * @param expectOrderStatusList   期望订单状态集合(满足任一即可)
+     * @param expectProcessStatusList 期望订单处理状态集合(满足任一即可)
+     * @param orderStatus             修改成的订单状态
+     * @param processStatus           修改成的订单处理状态
+     * @param orderId                 订单id
+     * @param userId                  用户id
+     */
+    @Override
+    public void changeOrderStatusByCAS(List<OrderStatus> expectOrderStatusList,
+                                       List<ProcessStatus> expectProcessStatusList,
+                                       OrderStatus orderStatus,
+                                       ProcessStatus processStatus,
+                                       Long orderId,
+                                       Long userId) {
+        // 期望订单状态集合
+        List<String> orderStatusList = expectOrderStatusList.stream()
+                .map(expectOrderStatus -> expectOrderStatus.name()).collect(Collectors.toList());
+
+        // 期望订单处理状态集合
+        List<String> processStatusList = expectProcessStatusList.stream()
+                .map(expectProcessStatus -> expectProcessStatus.name()).collect(Collectors.toList());
+
+        orderInfoMapper.updateOrderStatusByCAS(
+                orderStatusList,
+                processStatusList,
+                orderStatus.name(),
+                processStatus.name(),
+                orderId,
+                userId);
+
+    }
+
+    /**
+     * 根据订单id和用户id查询订单详情
+     *
+     * @param orderId
+     * @param userId
+     * @return
+     */
+    @Override
+    public OrderInfo getOrderInfoByOrderIdAndUserId(Long orderId, Long userId) {
+        LambdaQueryWrapper<OrderInfo> queryWrapper = new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getId, orderId)
+                .eq(OrderInfo::getUserId, userId);
+        OrderInfo orderInfo = orderInfoService.getOne(queryWrapper);
+        return orderInfo;
+    }
+
+    /**
+     * 修改订单为已支付
+     *
+     * @param json
+     */
+    @Override
+    public void updateOrderStatusPayed(String json) {
+        // 获取需要修改的订单的内容
+        Map<String, String> content = Jsons.toObject(json, new TypeReference<Map<String, String>>() {
+        });
+
+        // 保存支付信息到数据库
+        PaymentInfo paymentInfo = preparePaymentInfo(content);
+        paymentInfoService.save(paymentInfo);
+
+        // 修改订单状态为已支付
+        changeOrderStatusByCAS(
+                Arrays.asList(OrderStatus.CLOSED, OrderStatus.UNPAID),
+                Arrays.asList(ProcessStatus.CLOSED, ProcessStatus.UNPAID),
+                OrderStatus.PAID,
+                ProcessStatus.PAID,
+                Long.parseLong(paymentInfo.getOrderId()),
+                paymentInfo.getUserId()
+        );
+        log.info("修改订单状态为已支付");
+
+        // 调用库存系统,扣减库存
+        // sendStockMsg();
+        WareStockMsg wareStockMsg = properWareStockMsg(Long.parseLong(paymentInfo.getOrderId()), paymentInfo.getUserId());
+
+        rabbitTemplate.convertAndSend(
+                MqConst.WARE_STOCK_EXCHANGE,
+                MqConst.RK_WARE_STOCK,
+                Jsons.toString(wareStockMsg));
+
+
+    }
+
+    /**
+     * 感知库存扣减, 修改订单状态
+     *
+     * @param wareStockResultMsg
+     */
+    @Override
+    public void updateOrderStatusByStockResult(WareStockResultMsg wareStockResultMsg) {
+        Long orderId = wareStockResultMsg.getOrderId();
+        String status = wareStockResultMsg.getStatus();
+        LambdaQueryWrapper<OrderInfo> queryWrapper = new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getId, orderId);
+        OrderInfo orderInfo = orderInfoService.getOne(queryWrapper);
+        //
+
+        ProcessStatus processStatus = null;
+        OrderStatus orderStatus = null;
+        switch (status) {
+            case "DEDUCTED":
+                processStatus = ProcessStatus.NOTIFIED_WARE;
+                orderStatus = OrderStatus.WAITING_DELEVER;
+            case "OUT_OF_STOCK":
+                processStatus = ProcessStatus.STOCK_EXCEPTION;
+                orderStatus = OrderStatus.WAITING_SCHEDULE;
+        }
+        changeOrderStatusByCAS(
+                Arrays.asList(OrderStatus.PAID),
+                Arrays.asList(ProcessStatus.PAID),
+                orderStatus,
+                processStatus,
+                orderId,
+                orderInfo.getUserId()
+        );
+    }
+
+    private WareStockMsg properWareStockMsg(Long orderId, Long userId) {
+        OrderInfo orderInfo = getOrderInfoByOrderIdAndUserId(orderId, userId);
+        WareStockMsg wareStockMsg = new WareStockMsg();
+        // 订单id
+        wareStockMsg.setOrderId(orderId);
+        // 收货人
+        wareStockMsg.setConsignee(orderInfo.getConsignee());
+        // 收货电话
+        wareStockMsg.setConsigneeTel(orderInfo.getConsigneeTel());
+        // 订单备注
+        wareStockMsg.setOrderComment(orderInfo.getOrderComment());
+        // 订单概要
+        wareStockMsg.setOrderBody(orderInfo.getTradeBody());
+        // 发货地址
+        wareStockMsg.setDeliveryAddress(orderInfo.getDeliveryAddress());
+        // 支付方式
+        wareStockMsg.setPaymentWay("2");
+        // 购买商品明细
+        List<OrderDetail> orderDetailList = orderDetailService.getOrderDetails(orderId, userId);
+        List<WareStockMsg.DetailSku> detailSkuList = orderDetailList.stream()
+                .map(orderDetail -> {
+                    // 封装为所需对象集合
+                    WareStockMsg.DetailSku detailSku = new WareStockMsg.DetailSku();
+                    detailSku.setSkuId(orderDetail.getSkuId());
+                    detailSku.setSkuNum(orderDetail.getSkuNum());
+                    detailSku.setSkuName(orderDetail.getSkuName());
+                    return detailSku;
+                }).collect(Collectors.toList());
+        wareStockMsg.setDetails(detailSkuList);
+        return wareStockMsg;
+    }
+
+    /**
+     * 封装支付信息
+     *
+     * @param content
+     * @return
+     */
+    private PaymentInfo preparePaymentInfo(Map<String, String> content) {
+        PaymentInfo paymentInfo = new PaymentInfo();
+        // 对外业务编号
+        paymentInfo.setOutTradeNo(content.get("out_trade_no"));
+        OrderInfo orderInfo = orderInfoService.getOne(new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getOutTradeNo, paymentInfo.getOutTradeNo()));
+        // 用户id
+        paymentInfo.setUserId(orderInfo.getUserId());
+        // 订单编号
+        paymentInfo.setOrderId(orderInfo.getId().toString());
+        // 支付类型
+        paymentInfo.setPaymentType("ALIPAY");
+        // 交易编号
+        paymentInfo.setTradeNo(content.get("trade_no"));
+        // 支付金额
+        paymentInfo.setTotalAmount(new BigDecimal(content.get("total_amount")));
+        // 交易内容
+        paymentInfo.setSubject(content.get("subject"));
+        // 支付状态
+        paymentInfo.setPaymentStatus(content.get("trade_status"));
+        // 创建时间
+        paymentInfo.setCreateTime(new Date());
+        // 回调时间
+        paymentInfo.setCallbackTime(new Date());
+        // 回调信息
+        paymentInfo.setCallbackContent(Jsons.toString(content));
+        return paymentInfo;
     }
 
 

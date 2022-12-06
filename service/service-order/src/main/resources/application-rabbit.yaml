@@ -1,0 +1,13 @@
+spring:
+  rabbitmq:
+    host: 192.168.179.180
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+    publisher-confirm-type: correlated
+    publisher-returns: true # 发送端发送消息有明确返回
+    listener: # 配置消费端
+      simple:
+        prefetch: 10 # 消费端每次取10条消息
+        acknowledge-mode: manual # 手动确认, 当消费端确认消息消费成功后, 队列再删除消息

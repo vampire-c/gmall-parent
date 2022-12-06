@@ -27,5 +27,13 @@ public interface CacheOpsService {
     void saveCacheData(String key, Object object, Long ttl, TimeUnit timeUnit);
 
 
+    /**
+     * 查询缓存
+     *
+     * @param key
+     * @param typeReference
+     * @param <T>
+     * @return
+     */
     <T> T getCacheData(String key, TypeReference<T> typeReference);
 }

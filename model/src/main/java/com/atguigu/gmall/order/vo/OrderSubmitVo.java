@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -37,20 +36,20 @@ public class OrderSubmitVo {
 
 
 
-    @NoArgsConstructor
-    @Data
-    public static class OrderDetailListDTO {
-
-        private Long skuId;
-
-        private String skuName;
-
-        private Integer skuNum;
-
-        private BigDecimal orderPrice;
-
-        private String imgUrl;
-
-    }
+    // @NoArgsConstructor
+    // @Data
+    // public static class OrderDetailListDTO {
+    //
+    //     private Long skuId;
+    //
+    //     private String skuName;
+    //
+    //     private Integer skuNum;
+    //
+    //     private BigDecimal orderPrice;
+    //
+    //     private String imgUrl;
+    //
+    // }
 }
 

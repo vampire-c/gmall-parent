@@ -33,8 +33,9 @@ public enum ResultCodeEnum {
     CART_SIZE_OVERLIMIT(50001, "购物车品类数量超出限制"),
     CART_ITEM_OVERLIMIT(50002, "购物车单次购买商品数量超出限制"),
     ARGS_INVALIDE(10001, "提交的数据不合法"),
-    REQ_REPEAT(30002, "重复的请求"),
-    SKU_PRICE_CHANGE(30003, "商品价格异常");
+    REQ_REPEAT(30002, "重复的请求或非法请求"),
+    SKU_PRICE_CHANGE(30003, "商品价格异常"),
+    SKU_HAS_NO_STOCK(30004, "商品库存异常");
 
     private Integer code;
 

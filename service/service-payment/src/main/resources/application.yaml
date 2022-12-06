@@ -1,0 +1,34 @@
+server:
+  port: 15000
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  profiles:
+    include: rabbit
+
+app:
+  alipay:
+    # 应用id
+    app-id: 2021000120617377
+    # 商户私钥
+    merchant-private-key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCDOKtSIWj2pitq8NWIDTFOXAMfgLR8ZBjJsJQA9GW8mzqs0KEnWlZNSChUIkwN6pPRVDls1aLTNiuXT0GvsLonxjHKJUvtarEcGMIXBF4i6Xg7Bw7HQU+YYt1dvYFILjTdt9lNCx6Gyf1ZarZEMvg7RugxRX/+8xuWfIJTxdiHi1JO30JERGHRsErKXGswcQD8JjCg2RdsIdJCzg1tn9xdnFp8fv7jj5Q1/LfjIIks80m9RiXWYQCiHzR/77NqWsEUIdPblFRCmp5iBHKeZugCir/s9QFQ+zA2CNryWDYO5XcmoD+vzYyInpMS7khHbUIRcb0JZb88DZa6zI3XTtwFAgMBAAECggEAa8j4sJXQ6gjEUStRuldb0MmzpwTJPAPceI8ag0484xd+ssUMGo8RpJlIxxME9clhceiE4uj4vhUY6Uio4+9+eX1LGIhaPcINiM6tXsqvqG2t3I6HjRQQlVNgEce/kdKiihyh2a7wfDcea3xECvDzBX3Q6+fyozB90LalNrqkiXCyKRScblLsv/FX5sNESF1D/PLBeF36tkqgFooqaYyjTpsVxSXrBVKGDBIUUoXd7uYORDjHWZBtYoWUYScs8KjY13Q2/Urp1JebwzHcMxlKoGr/YK1n39ysu8TGTno5aq9RV7C5ebZ7iyziq6/NbxzNXjDjPpm1fBg8B4MTK0hKYQKBgQC3lTpMj6zZXK9cEHsOqMXXNwCXSjUXvF1/OIv5VTx5vmoKbeHGNCP8uqV0k4jt+V8sgwbQ+6uu8Gqe+WfHI8U8tT5rurW6vuW2pwaVAzusFDTwxc2i5NYOL9b//szE4ptjhSPS799wMalD9sx8i6kFYhsWoP2AKEtujivBS4oQswKBgQC2+88pqPQUhcCP9Q/pxWg4+i/DqriaqKCSCS6iIozxzhzfe6Gr+2gJnxBYtTxzMbvFEW4vXpvfW2goiN9vEqBGxojx4Syh9nD+lOuu8LRRiDKUxoleSIOTNC7gwbRDnFOH0qEhynf1TGFAO1rH5WoWvZNJKeo5a0VovJeKn39MZwKBgQCjH3Ua/Hsw9LtYycgeYXbR4ayjwatleNl3Js6xcLx4zOo6dCKuVDw537sO191O30tjKNXQsh9+JWAH/ELrXuxuIfniDZhW5DMHVmhx1dqa76WO36P1/vH4zydydnyK4XQDPRV04/GdJnNp0Y0niY1ZHDBHrisyShukk61rZuy6IwKBgQCgW1J0Jt0n8wMK5W85pcctT4t2RPGcj7SP5j4Y1oCAE+nXrAfFqP/GlsADjWhZZzcvf5P5LUcaWYeRJknwk/kjrS8sEfJESa1CXY2hdM4BOYNiQA74MkIkSbHfQ8HPEntdZyfQbhfsPzBm0t0+mvz6ys39ax8ZjLl6DPQdBqPPdwKBgA9ZhQMv5SQijVrONjX/r0kzbnGtcG5n3r06hLmM0do2kXzRjScEbgE3IQiU/FXyrbMuKnp/hwGks8ka5zYMhpXcIOfwdPA2dtmR/hYg7PjqkSo/KnOkts6ZvZP+2X1qOErrX3IU1F4QqSCzvY7NJ4BfpVqlRuUsWr5/A04qQqY0
+    # 支付宝公钥
+    alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAksfFQ1N26AJgHNrLfh0KLKhG2ttEM+d+cUoUHXs7H8HZ3tk0Yy6kX+xhTUyIpkVabfs+k8UShx396OrmiJtIGqCo/YOE3I9AWi1VW6plOhT7GPAMtfSbponf2WnXf8i6y67owOnS2rkRz01Y50MpyZncGmqoWfE5FykAWyz/wDcH8PqEjt3dPWIJqvuMegXlTAH9ibS4R01iYLWhi4yzzmyYvDrIy9P8HuuM220V8bwyaKq21GsE9BckLtoco2Ql4fy/9uOVY2by4omFXwyvMYaB4nkM6apGMdWP87J6Xh6hOn35PJOeBkps29lDwffZVkEEWs1S1XKSa3KCXeYMEQIDAQAB
+    # 签名方式 RSA
+    signType: RSA2
+    # 字符集 UTF-8
+    charset: utf-8
+    # 支付网关
+    gateway-url: https://openapi.alipaydev.com/gateway.do
+    # 格式化方式  "json"
+    format: json
+
+    # 同步跳转页, 当浏览器支付成功后要跳转的位置
+    return-url: http://payment.gmall.com/pay/success.html
+    # 异步通知, 当支付成功后的通知信息
+    notify-url: http://311dd1ad.r5.cpolar.top/api/payment/alipay/payed/success
+
+
+
+
+
