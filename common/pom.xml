@@ -32,10 +32,12 @@
             <version>1.0</version>
         </dependency>
 
+        <!--web开发-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided </scope>
+            <!--provided:目标环境提供-->
+            <scope>provided</scope>
         </dependency>
 
         <!--lombok用来简化实体类：需要安装lombok插件-->
@@ -49,11 +51,11 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+
         <!--用来转换json使用 {JavaObject - json | json - JavaObject}-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -61,11 +63,11 @@
             <version>1.2.29</version>
         </dependency>
 
-        <!-- 服务调用feign -->
+        <!-- openfeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <scope>provided </scope>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

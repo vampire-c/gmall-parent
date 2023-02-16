@@ -18,6 +18,8 @@
     </properties>
 
     <dependencies>
+
+        <!--通用工具类-->
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>common-util</artifactId>
@@ -51,7 +53,7 @@
             <scope>provided</scope>
         </dependency>
 
-
+        <!--minIO-->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>

@@ -21,7 +21,7 @@
 
     <groupId>com.atguigu.gmall</groupId>
     <artifactId>gmall-parent</artifactId>
-    <version>1.0</version>
+    <version>${gmall.version}</version>
 
     <!--父工程-->
     <packaging>pom</packaging>
@@ -44,6 +44,7 @@
     <!--配置dependencyManagement锁定依赖的版本 并不是实际的依赖。-->
     <dependencyManagement>
         <dependencies>
+            <!--shardingsphere-->
             <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
