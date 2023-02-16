@@ -33,8 +33,7 @@ public class BaseCategory3ServiceImpl extends ServiceImpl<BaseCategory3Mapper, B
         // QueryWrapper<BaseCategory3> queryWrapper = new QueryWrapper<>();
         // queryWrapper.eq("category2_id", category_id);
 
-        LambdaQueryWrapper<BaseCategory3> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BaseCategory3::getCategory2Id, category_id);
+        LambdaQueryWrapper<BaseCategory3> queryWrapper = new LambdaQueryWrapper<BaseCategory3>().eq(BaseCategory3::getCategory2Id, category_id);
         List<BaseCategory3> list = baseCategory3Mapper.selectList(queryWrapper);
         return list;
     }

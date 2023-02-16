@@ -5,10 +5,11 @@ spring:
     gateway:
       globalcors:
         cors-configurations:
+          #所有请求
           '[/**]':
+            # 简单跨域
             allowedOrigins: "*"
             allowedMethods: "*"
-            # 简单跨域
 
             # 复杂跨域
             allowedHeaders: "*"

@@ -28,18 +28,20 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
     <dependencies>
-        <!--依赖服务的工具类-->
+        <!--服务的工具类-->
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>service-util</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--数据载体-->
+
+        <!--模型层-->
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>model</artifactId>
             <version>1.0</version>
         </dependency>
+
         <!--feign-->
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
@@ -47,7 +49,7 @@
             <version>1.0</version>
         </dependency>
 
-        <!--web 需要启动项目-->
+        <!--web 开发场景-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -65,24 +67,25 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- 服务注册 -->
+        <!-- nacos服务注册 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <!-- 服务配置-->
+
+        <!-- nacos 服务配置-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- 服务调用feign -->
+        <!-- 服务调用openfeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- 流量控制 -->
+        <!-- sentinel 流量控制 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -95,7 +98,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!--链路追踪-->
+        <!--zipkin 链路追踪-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zipkin</artifactId>

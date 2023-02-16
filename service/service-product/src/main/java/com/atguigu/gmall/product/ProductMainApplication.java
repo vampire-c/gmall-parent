@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // @SpringBootApplication
 
 @EnableFeignClients(basePackages = "com.atguigu.gmall.feign.search")
-@EnableAppThreadPool
-@EnableAutoExceptionHandle
+@EnableAppThreadPool // 自定义线程池
+@EnableAutoExceptionHandle // 自动异常处理
 @EnableTransactionManagement // 开启事务
 @EnableSwagger3 // 开启Swagger
 @EnableMinio //开启文件上传
-@MapperScan("com.atguigu.gmall.product.mapper")
+@MapperScan("com.atguigu.gmall.product.mapper")//mapper扫描
+// @SpringBootApplication
+// @EnableDiscoveryClient 服务发现
+// @EnableCircuitBreaker 熔断降级
 @SpringCloudApplication
 public class ProductMainApplication {
     public static void main(String[] args) {

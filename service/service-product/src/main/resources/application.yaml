@@ -1,8 +1,8 @@
 server:
   port: 8000
 
-  # 配置数据源
 spring:
+  # 配置数据源
   datasource:
     url: jdbc:mysql://192.168.179.180:3306/gmall_product?useSSL=false
     username: root
@@ -19,10 +19,11 @@ spring:
 #    host: 192.168.179.180
 #    password: 123456
 #    port: 6379
-
 app:
   minio:
     endpoint: http://192.168.179.180:9000
     access-key: admin
     secret-key: admin123456
     bucket-name: mall
+#mybatis-plus:
+#  mapper-locations: classpath*:/mapper/**/*.xml
